@@ -9,13 +9,15 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from '../ListItem/listItems';
+import { mainListItems, secondaryListItems } from '../../components/ListItem/listItems';
+import UserAcountButton from '../../components/UserAcountButton/UserAcountButton';
+import Dashboard from '../DashBoard/DashBoard';
+import Timer from '../Timer/Timer';
+import { Routes, Route } from 'react-router-dom';
 
 function Copyright(props: any) {
   return (
@@ -82,7 +84,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
+function AppContent() {
   const [open, setOpen] = React.useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -119,11 +121,7 @@ function DashboardContent() {
             >
               Dashboard
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            <UserAcountButton />
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -160,9 +158,10 @@ function DashboardContent() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            
-            {/* ここに書く */}
-
+            <Routes>
+              <Route path="/app" element={<Dashboard />} />
+              <Route path="/app/timer" element={<Timer />} />
+            </Routes>
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
@@ -171,6 +170,6 @@ function DashboardContent() {
   );
 }
 
-export default function Dashboard() {
-  return <DashboardContent />;
+export default function App() {
+  return <AppContent />;
 }
