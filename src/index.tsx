@@ -1,14 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './view/pages/App/App';
-import { BrowserRouter } from 'react-router-dom';
+import App from './view/pages/App';
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const mdTheme = createTheme();
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <ThemeProvider theme={mdTheme}>
       <App />
-    </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
