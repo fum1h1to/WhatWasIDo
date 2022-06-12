@@ -11,11 +11,20 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Copyright from '../components/Copyright';
 import { Link } from "react-router-dom";
+import { useAuthContext } from '../../firebase/auth/AuthProvider';
+
 
 export default function SignUp() {
+  const { signup } = useAuthContext();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const email = String(data.get("email"));
+    const password = String(data.get("password"));
+    const confirmPassword = String(data.get("passwordAgain"))
+
+    signup(email, password, confirmPassword);
   };
 
   return (

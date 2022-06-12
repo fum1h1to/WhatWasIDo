@@ -9,8 +9,12 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { ListItemButton } from '@mui/material';
+import { useAuthContext } from '../../firebase/auth/AuthProvider';
 
 export default function UserAcountButton() {
+  const { logout } = useAuthContext();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -79,7 +83,7 @@ export default function UserAcountButton() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem>
+        <MenuItem onClick={logout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

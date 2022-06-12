@@ -11,12 +11,17 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Copyright from './Copyright';
 import { Link } from "react-router-dom";
+import { useAuthContext } from '../../firebase/auth/AuthProvider';
 
 export default function LogIn() {
+  const { login } = useAuthContext();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    
+    const email = String(data.get("email"));
+    const password = String(data.get("password"));
+    login(email, password);
   };
 
   return (
@@ -33,7 +38,7 @@ export default function LogIn() {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Sign in
+        Login
       </Typography>
       <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
         <TextField
@@ -67,7 +72,7 @@ export default function LogIn() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
         >
-          Sign In
+          Login
         </Button>
         <Grid container justifyContent="flex-end">
           <Grid item>

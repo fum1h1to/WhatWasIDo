@@ -6,12 +6,11 @@ export const PrivateRoute = ({ children }: {
   children?: ReactNode;
 }) => {
   const { loginUserId } = useAuthContext();
-  console.log(loginUserId);
   return loginUserId ? (
     <>
       { children }
     </>
   ) : (
-    <Navigate to="/" />
+    <Navigate to={`/`} />
   );
 }
