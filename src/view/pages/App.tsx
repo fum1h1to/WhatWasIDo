@@ -9,7 +9,7 @@ import { PrivateRoute } from '../../firebase/auth/PrivateRoute';
 
 export default function App() {
   return (
-    <BrowserRouter basename="/build/">
+    <BrowserRouter basename="/">
       <AuthProvider>
         <Routes>
           <Route path="/" element={<LoginAndSignUp isSignUp={false} />} />

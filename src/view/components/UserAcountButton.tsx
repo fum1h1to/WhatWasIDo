@@ -9,13 +9,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { ListItemButton } from '@mui/material';
 import { useAuthContext } from '../../firebase/auth/AuthProvider';
+import { doc, getDoc } from 'firebase/firestore';
+import { firebaseDB } from '../../firebase';
 
 export default function UserAcountButton() {
-  const { logout } = useAuthContext();
+  const { loginUserId, logout } = useAuthContext();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [userName, setUserName] = React.useState<string>("");
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -23,6 +25,16 @@ export default function UserAcountButton() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  if(loginUserId) {
+    const docRef = doc(firebaseDB, "users", loginUserId);
+    getDoc(docRef)
+      .then((docSnap) => {
+        if (docSnap.exists()) {
+          setUserName(docSnap.data().email);
+        }
+      });
+  }
 
   return (
     <React.Fragment>
@@ -74,7 +86,7 @@ export default function UserAcountButton() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          <Avatar /> My account
+          <Avatar /> {userName}
         </MenuItem>
         <Divider />
         <MenuItem>

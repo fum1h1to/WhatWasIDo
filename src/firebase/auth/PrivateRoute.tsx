@@ -1,5 +1,5 @@
-import { memo, FC, ReactNode } from "react";
-import { Navigate, Route, RouteProps } from "react-router-dom";
+import { ReactNode } from "react";
+import { Navigate, } from "react-router-dom";
 import { useAuthContext } from "./AuthProvider";
 
 export const PrivateRoute = ({ children }: {

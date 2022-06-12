@@ -1,7 +1,9 @@
-import { createContext, useState, useContext, useCallback, useLayoutEffect } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, UserCredential, signOut } from "firebase/auth";
-import { firebaseAuth } from '../index'
-import { Navigate, useNavigate } from 'react-router-dom';
+import { createContext, useState, useContext, useLayoutEffect } from 'react';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { firebaseAuth, firebaseDB } from '../index'
+import { useNavigate } from 'react-router-dom';
+import { UserScheduleData } from '../../data/UserScheduleData';
+import { doc, setDoc } from 'firebase/firestore';
 
 type AuthContextType = {
   loginUserId: string | null;
@@ -41,7 +43,20 @@ export function AuthProvider({ children }: {
           const user = result.user;
           if (user) {
             setLoginUserId(user.uid);
-            navigate("/app", { replace: true});
+
+            const userInitialData: UserScheduleData = {
+              appointData: [],
+              email: email,
+              uid: user.uid
+            }
+          
+            setDoc(doc(firebaseDB, "users", user.uid), userInitialData)
+              .then(() => {
+                navigate("/app", { replace: true});
+              })
+              .catch((error) => {
+                alert("DBでエラーがおきました。")
+              });
           }
         })
         .catch((error) => {
