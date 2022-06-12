@@ -2,18 +2,19 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import SignIn from '../components/SignIn';
+import LogIn from '../components/LogIn';
 import SignUp from '../components/SignUp';
 
-function whichSigninSignup(isSignUp: boolean) {
+function whichLoginSignup(isSignUp: boolean) {
   if (isSignUp) {
     return <SignUp />
   } else {
-    return <SignIn />
+    return <LogIn />
   }
 }
 
-export default function SigninAndSignUp(props: any) {
+
+export default function LoginAndSignUp(props: any) {
 
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
@@ -33,7 +34,7 @@ export default function SigninAndSignUp(props: any) {
         }}
       />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        {whichSigninSignup(props.isSignUp)}
+        {whichLoginSignup(props.isSignUp)}
       </Grid>
     </Grid>
   );

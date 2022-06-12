@@ -12,15 +12,10 @@ import Typography from '@mui/material/Typography';
 import Copyright from '../components/Copyright';
 import { Link } from "react-router-dom";
 
-
 export default function SignUp() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
   };
 
   return (
@@ -65,7 +60,7 @@ export default function SignUp() {
           fullWidth
           name="passwordAgain"
           label="Password Again"
-          type="passwordAgain"
+          type="password"
           id="passwordAgain"
           autoComplete="new-password"
         />
