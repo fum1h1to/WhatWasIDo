@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useLayoutEffect } from 'react';
+import { createContext, useState, useContext, useLayoutEffect, useEffect } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';

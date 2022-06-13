@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import {
@@ -16,6 +16,9 @@ import {
   AppointmentForm,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { Box, Modal } from '@mui/material';
+import { useAuthContext } from '../../firebase/auth/AuthProvider';
+import { doc, Timestamp, updateDoc } from 'firebase/firestore';
+import { firebaseDB } from '../../firebase/index';
 
 const style = {
   position: 'absolute',
@@ -42,15 +45,12 @@ const FormOverlay = ({ visible, children, onHide }) => {
 };
 
 export default function DashBoard() {
-  const currentDate = '2022-06-06';
-  const [schedulerData, setSchedulerData] = useState([
-    { id: 0, startDate: '2022-06-06T09:45', endDate: '2022-06-06T11:00', title: 'Meeting' },
-    { id: 1, startDate: '2022-06-06T12:00', endDate: '2022-06-06T13:30', title: 'Go to a gym' },
-  ]);
-
+  const { loginUserId, userScheduleData } = useAuthContext();
+  const [scheduleData, setScheduleData] = useState(userScheduleData.appointData);
+  
   const commitChanges = ({ added, changed, deleted }) => {
-    setSchedulerData(() => {
-      let data = Object.create(schedulerData);
+    setScheduleData(() => {
+      let data = Object.create(scheduleData);
       if (added) {
         const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
         data = [...data, { id: startingAddedId, ...added }];
@@ -62,6 +62,20 @@ export default function DashBoard() {
       if (deleted !== undefined) {
         data = data.filter(appointment => appointment.id !== deleted);
       }
+      
+      data.map(appointment => {
+        appointment.startDate = new Date(appointment.startDate).toISOString();
+        if (appointment.endDate) {
+          appointment.endDate = new Date(appointment.endDate).toISOString();
+        }
+      });
+      updateDoc(doc(firebaseDB, "users", loginUserId), {appointData: data})
+        .then(() => {
+          alert("更新成功！");
+        })
+        .catch((error) => {
+          alert("DBでエラーがおきました。")
+        });
       return data;
     });
   }
@@ -69,10 +83,9 @@ export default function DashBoard() {
   return (
     <Paper>
       <Scheduler
-        data={schedulerData}
+        data={scheduleData}
       >
         <ViewState
-          defaultCurrentDate={currentDate}
         />
         <EditingState
           onCommitChanges={commitChanges}
