@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -15,6 +15,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../components/listItems';
 import UserAcountButton from '../components/UserAcountButton';
 import Copyright from '../components/Copyright';
+import { useAuthContext } from '../../firebase/auth/AuthProvider';
 
 const drawerWidth: number = 240;
 
@@ -69,10 +70,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function AppFrame({ children }: {
   children?: React.ReactNode;
   }) {
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  
+  const { userScheduleData } = useAuthContext();
 
   return (
     <Box sx={{ display: 'flex' }}>

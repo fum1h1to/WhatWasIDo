@@ -1,13 +1,15 @@
 import { createContext, useState, useContext, useLayoutEffect } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
 import { UserScheduleData } from '../../data/UserScheduleData';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 type AuthContextType = {
   loginUserId: string | null;
   authLoading: boolean;
+  userScheduleData: UserScheduleData | null;
+  setUserScheduleData: (userScheduleData: UserScheduleData | null) => void;
   signup: (email: string, password: string, confirmPassword: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
@@ -24,6 +26,7 @@ export function AuthProvider({ children }: {
   }) {
     const [loginUserId, setLoginUserId] = useState<string | null>(null);
     const [authLoading, setAuthLoading] = useState(true);
+    const [userScheduleData, setUserScheduleData] = useState<UserScheduleData | null>(null);
 
     const navigate = useNavigate();
 
@@ -52,6 +55,7 @@ export function AuthProvider({ children }: {
           
             setDoc(doc(firebaseDB, "users", user.uid), userInitialData)
               .then(() => {
+                setUserScheduleData(userInitialData);
                 navigate("/app", { replace: true});
               })
               .catch((error) => {
@@ -80,10 +84,24 @@ export function AuthProvider({ children }: {
     }
 
     useLayoutEffect(() => {
-      onAuthStateChanged(firebaseAuth, (user) => {
+      onAuthStateChanged(firebaseAuth, async (user) => {
         setAuthLoading(true);
         if (user) {
           setLoginUserId(user.uid);
+          if (!userScheduleData) {
+            const docRef = doc(firebaseDB, "users", user.uid);
+            await getDoc(docRef)
+            .then((docSnap) => {
+              if (docSnap.exists()) {
+                const userData: UserScheduleData = {
+                  appointData: docSnap.data().appointData,
+                  email: docSnap.data().email,
+                  uid: docSnap.data().uid
+                };
+                setUserScheduleData(userData);
+              }
+            });
+          }
         }
         setAuthLoading(false);
       })
@@ -94,6 +112,8 @@ export function AuthProvider({ children }: {
         value={{
           loginUserId,
           authLoading,
+          userScheduleData,
+          setUserScheduleData,
           signup,
           login,
           logout
