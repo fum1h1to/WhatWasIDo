@@ -11,22 +11,8 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuthContext } from '../../firebase/auth/AuthProvider';
 
-const UserName = () => {
-  const { userScheduleData } = useAuthContext();
-  if (userScheduleData) {
-    return (
-      <>
-        { userScheduleData.email }
-      </>
-    );
-  }
-  return (
-    <></>
-  );
-}
-
 export default function UserAcountButton() {
-  const { logout } = useAuthContext();
+  const { logout, email } = useAuthContext();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -87,8 +73,7 @@ export default function UserAcountButton() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MenuItem>
-          <Avatar /> 
-          <UserName />
+          <Avatar /> {email}
         </MenuItem>
         <Divider />
         <MenuItem>

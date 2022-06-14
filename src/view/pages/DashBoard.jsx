@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import Paper from '@mui/material/Paper';
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import {
@@ -16,9 +15,8 @@ import {
   AppointmentForm,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { Box, Modal } from '@mui/material';
+import { useDBContext } from '../../firebase/db/DBProvider';
 import { useAuthContext } from '../../firebase/auth/AuthProvider';
-import { doc, Timestamp, updateDoc } from 'firebase/firestore';
-import { firebaseDB } from '../../firebase/index';
 
 const style = {
   position: 'absolute',
@@ -45,45 +43,30 @@ const FormOverlay = ({ visible, children, onHide }) => {
 };
 
 export default function DashBoard() {
-  const { loginUserId, userScheduleData } = useAuthContext();
-  const [scheduleData, setScheduleData] = useState(userScheduleData.appointData);
+  const { loginUserId } = useAuthContext()
+  const { appointData, updateAppointData } = useDBContext();
   
   const commitChanges = ({ added, changed, deleted }) => {
-    setScheduleData(() => {
-      let data = Object.create(scheduleData);
-      if (added) {
-        const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
-      }
-      if (changed) {
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
-      }
-      if (deleted !== undefined) {
-        data = data.filter(appointment => appointment.id !== deleted);
-      }
-      
-      data.map(appointment => {
-        appointment.startDate = new Date(appointment.startDate).toISOString();
-        if (appointment.endDate) {
-          appointment.endDate = new Date(appointment.endDate).toISOString();
-        }
-      });
-      updateDoc(doc(firebaseDB, "users", loginUserId), {appointData: data})
-        .then(() => {
-          alert("更新成功！");
-        })
-        .catch((error) => {
-          alert("DBでエラーがおきました。")
-        });
-      return data;
-    });
+    let data = Object.create(appointData);
+    if (added) {
+      const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+      data = [...data, { id: startingAddedId, ...added }];
+    }
+    if (changed) {
+      data = data.map(appointment => (
+        changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+    }
+    if (deleted !== undefined) {
+      data = data.filter(appointment => appointment.id !== deleted);
+    }
+    
+    updateAppointData(loginUserId, data);
   }
 
   return (
     <Paper>
       <Scheduler
-        data={scheduleData}
+        data={appointData}
       >
         <ViewState
         />

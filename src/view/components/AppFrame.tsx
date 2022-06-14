@@ -15,7 +15,6 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from '../components/listItems';
 import UserAcountButton from '../components/UserAcountButton';
 import Copyright from '../components/Copyright';
-import { useAuthContext } from '../../firebase/auth/AuthProvider';
 
 const drawerWidth: number = 240;
 
@@ -74,9 +73,6 @@ export default function AppFrame({ children }: {
   const toggleDrawer = () => {
     setOpen(!open);
   };
-
-  
-  const { userScheduleData } = useAuthContext();
 
   return (
     <Box sx={{ display: 'flex' }}>

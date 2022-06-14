@@ -1,18 +1,24 @@
-import { createContext, useState, useContext, useLayoutEffect, useEffect } from 'react';
+import { createContext, useState, useContext, useLayoutEffect } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
-import { UserScheduleData } from '../../data/UserScheduleData';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { AppointmentModel } from '@devexpress/dx-react-scheduler';
+import { useDBContext } from '../db/DBProvider';
 
 type AuthContextType = {
   loginUserId: string | null;
+  email: string;
   authLoading: boolean;
-  userScheduleData: UserScheduleData | null;
-  setUserScheduleData: (userScheduleData: UserScheduleData | null) => void;
   signup: (email: string, password: string, confirmPassword: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
+}
+
+type UserScheduleData = {
+  appointData: AppointmentModel[];
+  email: String;
+  uid: String;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -26,7 +32,8 @@ export function AuthProvider({ children }: {
   }) {
     const [loginUserId, setLoginUserId] = useState<string | null>(null);
     const [authLoading, setAuthLoading] = useState(true);
-    const [userScheduleData, setUserScheduleData] = useState<UserScheduleData | null>(null);
+    const [email, setEmail] = useState("");
+    const { appointData, setAppointData } = useDBContext();
 
     const navigate = useNavigate();
 
@@ -46,6 +53,7 @@ export function AuthProvider({ children }: {
           const user = result.user;
           if (user) {
             setLoginUserId(user.uid);
+            setEmail(email);
 
             const userInitialData: UserScheduleData = {
               appointData: [],
@@ -55,7 +63,6 @@ export function AuthProvider({ children }: {
           
             setDoc(doc(firebaseDB, "users", user.uid), userInitialData)
               .then(() => {
-                setUserScheduleData(userInitialData);
                 navigate("/app", { replace: true});
               })
               .catch((error) => {
@@ -65,6 +72,7 @@ export function AuthProvider({ children }: {
         })
         .catch((error) => {
           alert("エラーが起きました。");
+          console.log(error);
         });
     };
 
@@ -88,17 +96,13 @@ export function AuthProvider({ children }: {
         setAuthLoading(true);
         if (user) {
           setLoginUserId(user.uid);
-          if (!userScheduleData) {
+          if (!appointData) {
             const docRef = doc(firebaseDB, "users", user.uid);
             await getDoc(docRef)
             .then((docSnap) => {
               if (docSnap.exists()) {
-                const userData: UserScheduleData = {
-                  appointData: docSnap.data().appointData,
-                  email: docSnap.data().email,
-                  uid: docSnap.data().uid
-                };
-                setUserScheduleData(userData);
+                setAppointData(docSnap.data().appointData);
+                setEmail(docSnap.data().email);
               }
             });
           }
@@ -112,8 +116,7 @@ export function AuthProvider({ children }: {
         value={{
           loginUserId,
           authLoading,
-          userScheduleData,
-          setUserScheduleData,
+          email,
           signup,
           login,
           logout
