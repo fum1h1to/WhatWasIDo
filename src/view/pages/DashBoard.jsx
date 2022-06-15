@@ -13,6 +13,7 @@ import {
   AppointmentTooltip,
   ConfirmationDialog,
   AppointmentForm,
+  AllDayPanel,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { Box, Modal } from '@mui/material';
 import { useDBContext } from '../../firebase/db/DBProvider';
@@ -89,6 +90,7 @@ export default function DashBoard() {
         <ViewSwitcher />
         <ConfirmationDialog />
         <Appointments />
+        <AllDayPanel />
         <AppointmentTooltip
           showOpenButton
           showDeleteButton
