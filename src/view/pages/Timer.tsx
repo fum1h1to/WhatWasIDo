@@ -8,11 +8,11 @@ export default function Timer() {
   return (
     <Grid container alignItems="center" direction="column">
       <Grid item>
-        <TimerCont expiryTimestamp={time} />
+        <TimerCont />
       </Grid>
-      <Grid item>
+      {/* <Grid item>
         <StopwatchCont />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 }
