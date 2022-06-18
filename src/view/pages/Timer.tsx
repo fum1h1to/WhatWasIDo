@@ -2,8 +2,6 @@ import { Grid } from "@mui/material";
 import TimerCont from "../components/Timer/TimerCont";
 
 export default function Timer() {
-  const time = new Date();
-  time.setSeconds(time.getSeconds() + 600);
   return (
     <Grid container alignItems="center" direction="column">
       <Grid item>
