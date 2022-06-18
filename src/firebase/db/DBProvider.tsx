@@ -6,7 +6,7 @@ import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 type DBContextType = {
   appointData: AppointmentModel[] | null;
   setAppointData: (data: AppointmentModel[]) => void;
-  updateAppointData: (useId: string, data: AppointmentModel[]) => void; 
+  updateAppointData: (useId: string | null, data: AppointmentModel[]) => void; 
 }
 
 const DBContext = createContext<DBContextType>({} as DBContextType);
@@ -20,8 +20,8 @@ export function DBProvider({ children }: {
   }) {
     const [appointData, setAppointData] = useState<AppointmentModel[] | null>(null);
 
-    const updateAppointData = (userId: string, data: AppointmentModel[]) => {
-      if (userId === "") {
+    const updateAppointData = (userId: string | null, data: AppointmentModel[]) => {
+      if (userId === "" || !userId) {
         alert("エラー");
         return;
       }

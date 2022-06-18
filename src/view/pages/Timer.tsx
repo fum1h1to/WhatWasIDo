@@ -1,6 +1,5 @@
-import { CircularProgress, Grid } from "@mui/material";
-import StopwatchCont from "../components/StopwatchCont";
-import TimerCont from "../components/TimerCont";
+import { Grid } from "@mui/material";
+import TimerCont from "../components/Timer/TimerCont";
 
 export default function Timer() {
   const time = new Date();
