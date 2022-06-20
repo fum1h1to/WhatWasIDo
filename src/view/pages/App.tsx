@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AppFrame from '../components/AppFrame';
 import Dashboard from './DashBoard';
 import Timer from './Timer';
@@ -14,7 +13,14 @@ export default function App() {
       <DBProvider>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<LoginAndSignUp isSignUp={false} />} />
+            <Route path="/" element={
+              <PrivateRoute>
+                <AppFrame>
+                  <Dashboard />
+                </AppFrame>
+              </PrivateRoute>
+            } />
+            <Route path="/login" element={<LoginAndSignUp isSignUp={false} />} />
             <Route path="/signup" element={<LoginAndSignUp isSignUp={true} />} />
             <Route path="/app" element={
               <PrivateRoute>
@@ -30,7 +36,7 @@ export default function App() {
                 </AppFrame>
               </PrivateRoute>
             } />
-            <Route path="*" element={ <h1>404</h1> }/>
+            <Route path="*" element={<h1>404</h1>} />
           </Routes>
         </AuthProvider>
       </DBProvider>

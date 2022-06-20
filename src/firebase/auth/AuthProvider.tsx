@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useLayoutEffect } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser, browserLocalPersistence, browserSessionPersistence, setPersistence } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
 import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
@@ -11,7 +11,7 @@ type AuthContextType = {
   email: string;
   authLoading: boolean;
   signup: (email: string, password: string, confirmPassword: string) => void;
-  login: (email: string, password: string) => void;
+  login: (email: string, password: string, remember: boolean) => void;
   logout: () => void;
   deleteAccount: () => void;
 }
@@ -77,19 +77,27 @@ export function AuthProvider({ children }: {
         });
     };
 
-    const login = (email: string, password: string) => {
-      signInWithEmailAndPassword(firebaseAuth, email, password)
-        .then(() => {
-          navigate("/app", { replace: true});
-        })
-        .catch(() => {
-          alert("エラーが起きました。");
+    const login = (email: string, password: string, remember: boolean) => {
+      let however;
+      if (remember) {
+        however = browserLocalPersistence;
+      } else {
+        however = browserSessionPersistence;
+      }
+      setPersistence(firebaseAuth, however).then(() => {
+        signInWithEmailAndPassword(firebaseAuth, email, password)
+          .then(() => {
+            navigate("/app", { replace: true});
+          })
+          .catch(() => {
+            alert("エラーが起きました。");
+          });
         });
     };
 
     const logout = async () => {
       await signOut(firebaseAuth);
-      navigate("/", { replace: true });
+      navigate("/login", { replace: true });
     }
 
     const deleteAccount =  () => {
@@ -97,7 +105,7 @@ export function AuthProvider({ children }: {
       if (user) {
         deleteDoc(doc(firebaseDB, "users", user.uid));
         deleteUser(user).then(() => {
-          navigate("/", { replace: true });
+          navigate("/login", { replace: true });
         }).catch((error) => {
           alert("errorがおきました。");
         })

@@ -81,7 +81,7 @@ export default function SignUp() {
         </Button>
         <Grid container justifyContent="flex-end">
           <Grid item>
-            <Link to="/">
+            <Link to="/login">
               <MUILink variant="body2">
                 Already have an account? Sign in
               </MUILink>

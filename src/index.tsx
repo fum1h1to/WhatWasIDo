@@ -5,7 +5,11 @@ import App from './view/pages/App';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const mdTheme = createTheme();
+const mdTheme = createTheme({
+  palette: {
+    mode: "dark",
+  }
+});
 
 ReactDOM.render(
   <React.StrictMode>

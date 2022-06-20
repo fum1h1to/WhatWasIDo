@@ -21,7 +21,8 @@ export default function LogIn() {
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email"));
     const password = String(data.get("password"));
-    login(email, password);
+    const remember = Boolean(data.get("remember"));
+    login(email, password, remember);
   };
 
   return (
@@ -65,6 +66,7 @@ export default function LogIn() {
           control={<Checkbox value="remember" color="primary" />}
           name="remember"
           label="Remember me"
+          id="remember"
         />
         <Button
           type="submit"
