@@ -1,7 +1,8 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Modal, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Modal, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import { useAuthContext } from "../../firebase/auth/AuthProvider";
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
+import { useThemeContext } from "../pages/App";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -31,6 +32,14 @@ export default function UserAccountSetting(props: {
     deleteAccount();
   }
 
+  const { colorMode, setColorMode } = useThemeContext();
+  const colorModehandleChange = (
+    event: MouseEvent<HTMLElement>,
+    colorMode: "dark" | "light",
+  ) => {
+    setColorMode(colorMode);
+  }
+
   return (
     <Modal
       open={props.open}
@@ -49,7 +58,19 @@ export default function UserAccountSetting(props: {
             </IconButton>
           </Grid>
         </Grid>
-        <Divider sx={{my: 1}}/>
+        <Divider sx={{mt: 1, mb: 4}}/>
+        <Typography variant="subtitle1" gutterBottom component="div">
+          テーマの変更
+        </Typography>
+        <ToggleButtonGroup
+          exclusive
+          value={colorMode}
+          onChange={colorModehandleChange}
+        >
+          <ToggleButton value="light">ライトモード</ToggleButton>
+          <ToggleButton value="dark">ダークモード</ToggleButton>
+        </ToggleButtonGroup>
+        <Divider sx={{my: 4}}/>
         <Typography variant="subtitle1" gutterBottom component="div">
           アカウントを削除する
         </Typography>
