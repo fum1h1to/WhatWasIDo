@@ -1,4 +1,4 @@
-import * as React from 'react';
+
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Tooltip from '@mui/material/Tooltip';
@@ -10,21 +10,33 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuthContext } from '../../firebase/auth/AuthProvider';
+import { Grid } from '@mui/material';
+import { MouseEvent, useState } from 'react';
+import UserAccountSetting from './UserAccountSetting';
 
 export default function UserAcountButton() {
   const { logout, email } = useAuthContext();
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+  const handleClick = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  const [openUserAccountSetting, setOpenUserAccountSetting] = useState(false);
+  const UserAccountSettingHandleClose = () => {
+    setOpenUserAccountSetting(false);
+  }
+  const UserAccountSettingHandleOpen = () => {
+    setOpenUserAccountSetting(true);
+  }
+
+
   return (
-    <React.Fragment>
+    <>
       <Tooltip title="Account settings">
         <IconButton 
           color="inherit"
@@ -72,11 +84,12 @@ export default function UserAcountButton() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem>
-          <Avatar /> {email}
-        </MenuItem>
+        <Grid container alignItems="center" sx={{px: 2, py: 1}}>
+          <Grid item><Avatar /></Grid>
+          <Grid item>{email}</Grid>
+        </Grid>
         <Divider />
-        <MenuItem>
+        <MenuItem onClick={UserAccountSettingHandleOpen}>
           <ListItemIcon>
             <Settings fontSize="small" />
           </ListItemIcon>
@@ -89,6 +102,10 @@ export default function UserAcountButton() {
           Logout
         </MenuItem>
       </Menu>
-    </React.Fragment>
+      <UserAccountSetting
+        open={openUserAccountSetting}
+        onClose={UserAccountSettingHandleClose}
+      />
+    </>
   );
 }

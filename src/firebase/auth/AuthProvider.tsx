@@ -1,8 +1,8 @@
 import { createContext, useState, useContext, useLayoutEffect } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 import { useDBContext } from '../db/DBProvider';
 
@@ -13,6 +13,7 @@ type AuthContextType = {
   signup: (email: string, password: string, confirmPassword: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
+  deleteAccount: () => void;
 }
 
 type UserScheduleData = {
@@ -91,6 +92,18 @@ export function AuthProvider({ children }: {
       navigate("/", { replace: true });
     }
 
+    const deleteAccount =  () => {
+      const user = firebaseAuth.currentUser;
+      if (user) {
+        deleteDoc(doc(firebaseDB, "users", user.uid));
+        deleteUser(user).then(() => {
+          navigate("/", { replace: true });
+        }).catch((error) => {
+          alert("errorがおきました。");
+        })
+      }
+    }
+
     useLayoutEffect(() => {
       onAuthStateChanged(firebaseAuth, async (user) => {
         setAuthLoading(true);
@@ -119,7 +132,8 @@ export function AuthProvider({ children }: {
           email,
           signup,
           login,
-          logout
+          logout,
+          deleteAccount,
         }}
       >
         { authLoading ? (
