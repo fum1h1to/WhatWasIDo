@@ -1,6 +1,7 @@
 import AppFrame from '../components/AppFrame';
 import Dashboard from './DashBoard';
 import Timer from './Timer';
+import Stopwatch from './Stopwatch';
 import LoginAndSignUp from './LoginAndSignUp';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '../../firebase/auth/AuthProvider';
@@ -60,6 +61,13 @@ export default function App() {
                   <PrivateRoute>
                     <AppFrame>
                       <Timer />
+                    </AppFrame>
+                  </PrivateRoute>
+                } />
+                 <Route path="/app/stopwatch" element={
+                  <PrivateRoute>
+                    <AppFrame>
+                      <Stopwatch />
                     </AppFrame>
                   </PrivateRoute>
                 } />

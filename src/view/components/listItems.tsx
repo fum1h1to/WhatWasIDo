@@ -5,7 +5,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TimerIcon from '@mui/icons-material/Timer';
+import AvTimerIcon from '@mui/icons-material/AvTimer';
 import { Link } from "react-router-dom";
 
 export const mainListItems = (
@@ -24,9 +25,18 @@ export const mainListItems = (
       to="/app/timer"
     >
       <ListItemIcon>
-        <AccessTimeIcon />
+        <TimerIcon />
       </ListItemIcon>
       <ListItemText primary="Timer" />
+    </ListItemButton>
+    <ListItemButton
+      component={Link}
+      to="/app/stopwatch"
+    >
+      <ListItemIcon>
+        <AvTimerIcon />
+      </ListItemIcon>
+      <ListItemText primary="StopWatch" />
     </ListItemButton>
   </React.Fragment>
 );
@@ -34,7 +44,7 @@ export const mainListItems = (
 export const secondaryListItems = (
   <React.Fragment>
     <ListSubheader component="div" inset>
-      Saved reports
+      Share
     </ListSubheader>
     <ListItemButton>
       <ListItemIcon>

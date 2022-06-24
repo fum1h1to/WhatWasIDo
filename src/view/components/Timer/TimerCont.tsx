@@ -90,13 +90,18 @@ export default function TimerCont() {
   return (
     <div style={{ textAlign: "center" }}>
       <div style={{ fontSize: "100px" }}>
-        <span>{zeroPadding(hour, 2)}</span>:<span>{zeroPadding(minute, 2)}</span>:<span>{zeroPadding(second, 2)}</span>
+        { openTimerModal ? 
+          <span>Running</span>
+          :
+          <><span>{zeroPadding(hour, 2)}</span>:<span>{zeroPadding(minute, 2)}</span>:<span>{zeroPadding(second, 2)}</span></>
+        }
       </div>
       <Stack direction="row" spacing={2} justifyContent="center">
         <Button 
           onClick={startTimer}
           variant="contained"
           startIcon={<PlayCircleOutlineIcon />}
+          disabled={openTimerModal ? true : false}
         >
           Start
         </Button>
