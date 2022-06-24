@@ -5,7 +5,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import TimerIcon from '@mui/icons-material/Timer';
+import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
 import { Link } from "react-router-dom";
 
@@ -25,7 +25,7 @@ export const mainListItems = (
       to="/app/timer"
     >
       <ListItemIcon>
-        <TimerIcon />
+        <AvTimerIcon />
       </ListItemIcon>
       <ListItemText primary="Timer" />
     </ListItemButton>
@@ -34,7 +34,7 @@ export const mainListItems = (
       to="/app/stopwatch"
     >
       <ListItemIcon>
-        <AvTimerIcon />
+        <TimerOutlinedIcon />
       </ListItemIcon>
       <ListItemText primary="StopWatch" />
     </ListItemButton>
