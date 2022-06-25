@@ -4,7 +4,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 
 type DBContextType = {
-  appointData: AppointmentModel[] | null;
+  appointData: AppointmentModel[] | undefined;
   setAppointData: (data: AppointmentModel[]) => void;
   updateAppointData: (useId: string | null, data: AppointmentModel[]) => void; 
 }
@@ -18,7 +18,7 @@ export function useDBContext() {
 export function DBProvider({ children }: {
     children?: React.ReactNode;
   }) {
-    const [appointData, setAppointData] = useState<AppointmentModel[] | null>(null);
+    const [appointData, setAppointData] = useState<AppointmentModel[] | undefined>(undefined);
 
     const updateAppointData = (userId: string | null, data: AppointmentModel[]) => {
       if (userId === "" || !userId) {

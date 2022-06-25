@@ -70,10 +70,12 @@ export default function StopwatchCont() {
   }
   const dataInputDialogAgree = () => {
     console.log(startTime, endTime);
-    let data = Object.create(appointData);
-    const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-    data = [...data, { id: startingAddedId, title: title, startDate: startTime, endDate: endTime, notes: memo }];
-    updateAppointData(loginUserId, data);
+    if (appointData) {
+      let data = Object.create(appointData);
+      const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
+      data = [...data, { id: startingAddedId, title: title, startDate: startTime, endDate: endTime, notes: memo }];
+      updateAppointData(loginUserId, data);
+    }
     dataInputDialogHandleClose();
     reset()
   }

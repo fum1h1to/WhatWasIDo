@@ -7,9 +7,6 @@ export default function Timer() {
       <Grid item>
         <TimerCont />
       </Grid>
-      {/* <Grid item>
-        <StopwatchCont />
-      </Grid> */}
     </Grid>
   );
 }

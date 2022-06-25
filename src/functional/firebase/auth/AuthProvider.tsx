@@ -3,8 +3,8 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthState
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
 import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
-import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 import { useDBContext } from '../db/DBProvider';
+import UserScheduleData from '../../../data/UserScheduleData';
 
 type AuthContextType = {
   loginUserId: string | null;
@@ -14,12 +14,6 @@ type AuthContextType = {
   login: (email: string, password: string, remember: boolean) => void;
   logout: () => void;
   deleteAccount: () => void;
-}
-
-type UserScheduleData = {
-  appointData: AppointmentModel[];
-  email: String;
-  uid: String;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);

@@ -18,15 +18,7 @@ import {
 import { Box, Modal } from '@mui/material';
 import { useDBContext } from '../../../functional/firebase/db/DBProvider';
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 'auto',
-  bgcolor: 'background.paper',
-};
+import style from './style.module.scss';
 
 const FormOverlay = ({ visible, children, onHide }) => {
   return (
@@ -34,7 +26,7 @@ const FormOverlay = ({ visible, children, onHide }) => {
       open={visible}
       onClose={onHide}
     >
-      <Box sx={style}>
+      <Box sx={{bgcolor: 'background.paper'}} className={style.modal}>
         <Paper>
           { children }
         </Paper>

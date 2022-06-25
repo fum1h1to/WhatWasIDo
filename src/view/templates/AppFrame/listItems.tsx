@@ -4,9 +4,9 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import TimerOutlinedIcon from '@mui/icons-material/TimerOutlined';
 import AvTimerIcon from '@mui/icons-material/AvTimer';
+import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import { Link } from "react-router-dom";
 
 export const mainListItems = (
@@ -46,11 +46,14 @@ export const secondaryListItems = (
     <ListSubheader component="div" inset>
       Share
     </ListSubheader>
-    <ListItemButton>
+    <ListItemButton
+      component={Link}
+      to="/app/find"
+    >
       <ListItemIcon>
-        <AssignmentIcon />
+        <ContentPasteSearchIcon />
       </ListItemIcon>
-      <ListItemText primary="Current month" />
+      <ListItemText primary="Find Calendar" />
     </ListItemButton>
   </React.Fragment>
 );
