@@ -16,8 +16,8 @@ import {
   AllDayPanel,
 } from '@devexpress/dx-react-scheduler-material-ui';
 import { Box, Modal } from '@mui/material';
-import { useDBContext } from '../../firebase/db/DBProvider';
-import { useAuthContext } from '../../firebase/auth/AuthProvider';
+import { useDBContext } from '../../../functional/firebase/db/DBProvider';
+import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 
 const style = {
   position: 'absolute',

@@ -4,8 +4,8 @@ import { useTimer } from "use-timer";
 import { zeroPadding } from "../../../utils";
 
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
-import { useAuthContext } from "../../../firebase/auth/AuthProvider";
-import { useDBContext } from "../../../firebase/db/DBProvider";
+import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
+import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 
 
 export default function TimerUsing(props: {

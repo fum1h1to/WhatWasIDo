@@ -1,12 +1,15 @@
 import { Grid } from "@mui/material";
-import StopwatchCont from "../components/Stopwatch/StopwatchCont";
+import TimerCont from "./TimerCont";
 
-export default function Stopwatch() {
+export default function Timer() {
   return (
     <Grid container alignItems="center" direction="column">
       <Grid item>
-        <StopwatchCont />
+        <TimerCont />
       </Grid>
+      {/* <Grid item>
+        <StopwatchCont />
+      </Grid> */}
     </Grid>
   );
 }

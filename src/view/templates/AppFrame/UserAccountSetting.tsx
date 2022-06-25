@@ -1,8 +1,8 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Modal, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
-import { useAuthContext } from "../../firebase/auth/AuthProvider";
+import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { MouseEvent, useState } from "react";
-import { useThemeContext } from "../pages/App";
+import { useThemeContext } from "../AppRouter";
 
 const style = {
   position: 'absolute' as 'absolute',

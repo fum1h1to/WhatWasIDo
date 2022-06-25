@@ -12,9 +12,9 @@ import IconButton from '@mui/material/IconButton';
 import Container from '@mui/material/Container';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { mainListItems, secondaryListItems } from '../components/listItems';
-import UserAcountButton from '../components/UserAcountButton';
-import Copyright from '../components/Copyright';
+import { mainListItems, secondaryListItems } from './listItems';
+import UserAcountButton from './UserAcountButton';
+import Copyright from '../../components/Copyright';
 
 const drawerWidth: number = 240;
 

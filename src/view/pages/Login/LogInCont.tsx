@@ -9,11 +9,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Copyright from './Copyright';
+import Copyright from '../../components/Copyright';
 import { Link } from "react-router-dom";
-import { useAuthContext } from '../../firebase/auth/AuthProvider';
+import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 
-export default function LogIn() {
+export default function LogInCont() {
   const { login } = useAuthContext();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

@@ -1,17 +1,7 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-import LogIn from '../components/LogIn';
-import SignUp from '../components/SignUp';
-
-function whichLoginSignup(isSignUp: boolean) {
-  if (isSignUp) {
-    return <SignUp />
-  } else {
-    return <LogIn />
-  }
-}
-
+import SignUpCont from './SignUpCont';
 
 export default function LoginAndSignUp(props: any) {
 
@@ -33,7 +23,7 @@ export default function LoginAndSignUp(props: any) {
         }}
       />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        {whichLoginSignup(props.isSignUp)}
+        <SignUpCont />
       </Grid>
     </Grid>
   );

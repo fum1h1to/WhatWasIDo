@@ -9,7 +9,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useAuthContext } from '../../firebase/auth/AuthProvider';
+import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import { Grid } from '@mui/material';
 import { MouseEvent, useState } from 'react';
 import UserAccountSetting from './UserAccountSetting';

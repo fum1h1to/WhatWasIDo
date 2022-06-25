@@ -1,14 +1,15 @@
-import AppFrame from '../components/AppFrame';
-import Dashboard from './DashBoard';
-import Timer from './Timer';
-import Stopwatch from './Stopwatch';
-import LoginAndSignUp from './LoginAndSignUp';
+import AppFrame from './AppFrame/AppFrame';
+import Dashboard from '../pages/DashBoard/DashBoard';
+import Timer from '../pages/Timer/Timer';
+import Stopwatch from '../pages/Stopwatch/Stopwatch';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from '../../firebase/auth/AuthProvider';
-import { PrivateRoute } from '../../firebase/auth/PrivateRoute';
-import { DBProvider } from '../../firebase/db/DBProvider';
+import { AuthProvider } from '../../functional/firebase/auth/AuthProvider';
+import { PrivateRoute } from '../../functional/firebase/auth/PrivateRoute';
+import { DBProvider } from '../../functional/firebase/db/DBProvider';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { createContext, useContext,  useState } from 'react';
+import Login from '../pages/Login/Login';
+import SignUp from '../pages/SignUp/SignUpCont';
 
 type ThemeContextType = {
   colorMode: "light" | "dark";
@@ -48,8 +49,8 @@ export default function App() {
                     </AppFrame>
                   </PrivateRoute>
                 } />
-                <Route path="/login" element={<LoginAndSignUp isSignUp={false} />} />
-                <Route path="/signup" element={<LoginAndSignUp isSignUp={true} />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
                 <Route path="/app" element={
                   <PrivateRoute>
                     <AppFrame>
