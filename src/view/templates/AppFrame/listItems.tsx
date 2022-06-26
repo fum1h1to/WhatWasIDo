@@ -48,7 +48,7 @@ export const secondaryListItems = (
     </ListSubheader>
     <ListItemButton
       component={Link}
-      to="/app/find"
+      to="/app/findCalender"
     >
       <ListItemIcon>
         <ContentPasteSearchIcon />

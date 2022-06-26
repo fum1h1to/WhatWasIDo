@@ -9,7 +9,8 @@ import { DBProvider } from '../../functional/firebase/db/DBProvider';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { createContext, useContext,  useState } from 'react';
 import Login from '../pages/Login/Login';
-import SignUp from '../pages/SignUp/SignUpCont';
+import SignUp from '../pages/SignUp/SignUp';
+import FindCalender from '../pages/FindCalender/FindCalender';
 
 type ThemeContextType = {
   colorMode: "light" | "dark";
@@ -65,10 +66,17 @@ export default function App() {
                     </AppFrame>
                   </PrivateRoute>
                 } />
-                 <Route path="/app/stopwatch" element={
+                <Route path="/app/stopwatch" element={
                   <PrivateRoute>
                     <AppFrame>
                       <Stopwatch />
+                    </AppFrame>
+                  </PrivateRoute>
+                } />
+                <Route path="/app/findCalender" element={
+                  <PrivateRoute>
+                    <AppFrame>
+                      <FindCalender />
                     </AppFrame>
                   </PrivateRoute>
                 } />

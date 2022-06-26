@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import SignUpCont from './SignUpCont';
 
-export default function LoginAndSignUp(props: any) {
+export default function SignUp(props: any) {
 
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
