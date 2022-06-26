@@ -36,7 +36,7 @@ const FormOverlay = ({ visible, children, onHide }) => {
 };
 
 export default function DashBoard() {
-  const { loginUserId } = useAuthContext()
+  const { scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   
   const commitChanges = ({ added, changed, deleted }) => {
@@ -53,7 +53,7 @@ export default function DashBoard() {
       data = data.filter(appointment => appointment.id !== deleted);
     }
     
-    updateAppointData(loginUserId, data);
+    updateAppointData(scheduleId, data);
   }
 
   return (

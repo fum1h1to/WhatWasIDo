@@ -1,7 +1,5 @@
-import { AppointmentModel } from '@devexpress/dx-react-scheduler';
-
 type UserScheduleData = {
-  appointData: AppointmentModel[];
+  scheduleId: string;
   email: String;
   uid: String;
 }

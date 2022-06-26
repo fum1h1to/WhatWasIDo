@@ -13,7 +13,7 @@ export default function TimerUsing(props: {
   timerOrStop: "Timer" | "Stopwatch",
   onEnd: () => void,
 }) {
-  const { loginUserId } = useAuthContext()
+  const { scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   const [ startTime, setStartTime ] = useState<Date>(new Date());
   const [ endTime, setEndTime ] = useState<Date | null>(null);
@@ -79,7 +79,7 @@ export default function TimerUsing(props: {
       let data = Object.create(appointData);
       const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
       data = [...data, { id: startingAddedId, title: title, startDate: startTime, endDate: endTime, notes: memo }];
-      updateAppointData(loginUserId, data);
+      updateAppointData(scheduleId, data);
     }
     dataInputDialogHandleClose();
     props.onEnd();

@@ -1,12 +1,13 @@
 import { createContext, useState, useContext } from 'react';
 import { firebaseDB } from '../index';
-import { doc, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 
 type DBContextType = {
   appointData: AppointmentModel[] | undefined;
   setAppointData: (data: AppointmentModel[]) => void;
-  updateAppointData: (useId: string | null, data: AppointmentModel[]) => void; 
+  updateAppointData: (useId: string | null, data: AppointmentModel[]) => void;
+  searchUser: (email: string) => Promise<string | null>;
 }
 
 const DBContext = createContext<DBContextType>({} as DBContextType);
@@ -20,8 +21,8 @@ export function DBProvider({ children }: {
   }) {
     const [appointData, setAppointData] = useState<AppointmentModel[] | undefined>(undefined);
 
-    const updateAppointData = (userId: string | null, data: AppointmentModel[]) => {
-      if (userId === "" || !userId) {
+    const updateAppointData = (scheduleId: string | null, data: AppointmentModel[]) => {
+      if (scheduleId === "" || !scheduleId) {
         alert("エラー");
         return;
       }
@@ -31,7 +32,7 @@ export function DBProvider({ children }: {
           appointment.endDate = new Date(appointment.endDate).toISOString();
         }
       });
-      updateDoc(doc(firebaseDB, "users", userId), {appointData: data})
+      updateDoc(doc(firebaseDB, "schedules", scheduleId), {appointData: data})
         .then(() => {
           setAppointData(data);
         })
@@ -39,13 +40,27 @@ export function DBProvider({ children }: {
           alert("DBでエラーがおきました。")
         });
     }
+
+    const searchUser = async (email: string) => {
+      const usersRef = collection(firebaseDB, "users");
+      let result = null;
+      await getDocs(query(usersRef, where('email', '==', email)))
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          result = doc.id;
+        });
+      });
+      
+      return result;
+    }
     
     return (
       <DBContext.Provider 
         value={{
           appointData,
           setAppointData,
-          updateAppointData
+          updateAppointData,
+          searchUser,
         }}
       >
         { 

@@ -2,12 +2,13 @@ import { createContext, useState, useContext, useLayoutEffect } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser, browserLocalPersistence, browserSessionPersistence, setPersistence } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
-import { deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { useDBContext } from '../db/DBProvider';
 import UserScheduleData from '../../../data/UserScheduleData';
 
 type AuthContextType = {
   loginUserId: string | null;
+  scheduleId: string | null;
   email: string;
   authLoading: boolean;
   signup: (email: string, password: string, confirmPassword: string) => void;
@@ -26,6 +27,7 @@ export function AuthProvider({ children }: {
     children?: React.ReactNode;
   }) {
     const [loginUserId, setLoginUserId] = useState<string | null>(null);
+    const [scheduleId, setScheduleId] = useState<string | null>(null);
     const [authLoading, setAuthLoading] = useState(true);
     const [email, setEmail] = useState("");
     const { appointData, setAppointData } = useDBContext();
@@ -50,18 +52,25 @@ export function AuthProvider({ children }: {
             setLoginUserId(user.uid);
             setEmail(email);
 
+            const scheduleId = doc(collection(firebaseDB, "schedules"));
+            setScheduleId(scheduleId.id);
+
             const userInitialData: UserScheduleData = {
-              appointData: [],
+              scheduleId: scheduleId.id,
               email: email,
               uid: user.uid
             }
-          
+            
             setDoc(doc(firebaseDB, "users", user.uid), userInitialData)
               .then(() => {
-                navigate("/app", { replace: true});
+                setDoc(scheduleId, { appointData: [] }).then(() => {
+                  navigate("/app", { replace: true });
+                }).catch((error) => {
+                  alert("DBでエラーが起きました。");
+                })
               })
               .catch((error) => {
-                alert("DBでエラーがおきました。")
+                alert("DBでエラーがおきました。");
               });
           }
         })
@@ -114,10 +123,18 @@ export function AuthProvider({ children }: {
           if (!appointData) {
             const docRef = doc(firebaseDB, "users", user.uid);
             await getDoc(docRef)
-            .then((docSnap) => {
+            .then(async (docSnap) => {
               if (docSnap.exists()) {
-                setAppointData(docSnap.data().appointData);
                 setEmail(docSnap.data().email);
+                const scheduleId = docSnap.data().scheduleId;
+                setScheduleId(scheduleId);
+                const docScheRef = doc(firebaseDB, "schedules", scheduleId);
+                await getDoc(docScheRef)
+                .then((snap) => {
+                  if (snap.exists()) {
+                    setAppointData(snap.data().appointData);
+                  }
+                })
               }
             });
           }
@@ -130,6 +147,7 @@ export function AuthProvider({ children }: {
       <AuthContext.Provider 
         value={{
           loginUserId,
+          scheduleId,
           authLoading,
           email,
           signup,
