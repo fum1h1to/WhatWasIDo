@@ -38,7 +38,8 @@ export function DBProvider({ children }: {
           setSharing(data);
         })
         .catch((error) => {
-          alert("DBでエラーがおきました。")
+          alert("DBでエラーがおきました。");
+          console.log(error);
         });
     }
 
@@ -58,7 +59,8 @@ export function DBProvider({ children }: {
           setAppointData(data);
         })
         .catch((error) => {
-          alert("DBでエラーがおきました。")
+          alert("DBでエラーがおきました。");
+          console.log(error);
         });
     }
 
