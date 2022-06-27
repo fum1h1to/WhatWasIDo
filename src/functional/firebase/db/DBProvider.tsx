@@ -5,7 +5,7 @@ import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 
 type DBContextType = {
   appointData: AppointmentModel[] | undefined;
-  setAppointData: (data: AppointmentModel[]) => void;
+  setAppointData: (data: AppointmentModel[] | undefined) => void;
   updateAppointData: (useId: string | null, data: AppointmentModel[]) => void;
   searchUser: (email: string) => Promise<string | null>;
 }

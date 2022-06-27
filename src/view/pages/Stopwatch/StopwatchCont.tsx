@@ -69,7 +69,6 @@ export default function StopwatchCont() {
     reset()
   }
   const dataInputDialogAgree = () => {
-    console.log(startTime, endTime);
     if (appointData) {
       let data = Object.create(appointData);
       const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;

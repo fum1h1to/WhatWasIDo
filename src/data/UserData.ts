@@ -1,7 +1,7 @@
-type UserScheduleData = {
+type UserData = {
   scheduleId: string;
   email: String;
   uid: String;
 }
 
-export default UserScheduleData;
+export default UserData;
