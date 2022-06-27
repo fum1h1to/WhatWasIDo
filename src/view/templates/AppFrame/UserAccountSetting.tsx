@@ -1,8 +1,9 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Modal, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Modal, Stack, Switch, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { MouseEvent, useState } from "react";
 import { useThemeContext } from "../AppRouter";
+import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -19,7 +20,7 @@ export default function UserAccountSetting(props: {
   open: boolean,
   onClose: () => void,
 }) {
-  const { deleteAccount } = useAuthContext();
+  const { deleteAccount, scheduleId } = useAuthContext();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const deleteDialogHandleOpen = () => {
@@ -40,6 +41,11 @@ export default function UserAccountSetting(props: {
     setColorMode(colorMode);
   }
 
+  const { sharing, updateSharing } = useDBContext();
+  const sharinghandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    updateSharing(scheduleId, event.target.checked);
+  }
+
   return (
     <Modal
       open={props.open}
@@ -58,7 +64,9 @@ export default function UserAccountSetting(props: {
             </IconButton>
           </Grid>
         </Grid>
+
         <Divider sx={{mt: 1, mb: 4}}/>
+
         <Typography variant="subtitle1" gutterBottom component="div">
           テーマの変更
         </Typography>
@@ -70,7 +78,24 @@ export default function UserAccountSetting(props: {
           <ToggleButton value="light">ライトモード</ToggleButton>
           <ToggleButton value="dark">ダークモード</ToggleButton>
         </ToggleButtonGroup>
+
         <Divider sx={{my: 4}}/>
+
+        <Typography variant="subtitle1" gutterBottom component="div">
+          データの共有
+        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center">
+          <Typography>しない</Typography>
+          <Switch
+            checked={sharing}
+            onChange={sharinghandleChange}
+            inputProps={{ 'aria-label': 'controlled' }}
+          />
+          <Typography>する</Typography>
+        </Stack>
+
+        <Divider sx={{my: 4}}/>
+
         <Typography variant="subtitle1" gutterBottom component="div">
           アカウントを削除する
         </Typography>

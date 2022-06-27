@@ -6,6 +6,7 @@ import { collection, deleteDoc, doc, getDoc, runTransaction, setDoc } from 'fire
 import { useDBContext } from '../db/DBProvider';
 import UserData from '../../../data/UserData';
 import ScheduleData from '../../../data/ScheduleData';
+import { useMediaQuery } from '@mui/material';
 
 type AuthContextType = {
   loginUserId: string | null;
@@ -31,9 +32,22 @@ export function AuthProvider({ children }: {
     const [ scheduleId, setScheduleId ] = useState<string | null>(null);
     const [ authLoading, setAuthLoading ] = useState(true);
     const [ email, setEmail ] = useState("");
-    const { appointData, setAppointData } = useDBContext();
+    const { 
+      appointData, setAppointData,
+      isDarkMode, setIsDarkMode,
+      sharing, setSharing,
+    } = useDBContext();
 
     const navigate = useNavigate();
+
+    const initDatas = () => {
+      setScheduleId(null);
+      setLoginUserId(null);
+      setEmail("");
+      setAppointData(undefined);
+      setIsDarkMode(false);
+      setSharing(false);
+    }
 
     const signup = async (email: string, password: string, confirmPassword: string) => {
       if (email === "" || password === "" || confirmPassword === "") {
@@ -54,15 +68,17 @@ export function AuthProvider({ children }: {
               if (user) {
                 const usersDocRef = doc(firebaseDB, "users", user.uid);
                 const schedulesDocRef = doc(collection(firebaseDB, "schedules"));
-  
+
                 const userInitialData: UserData = {
                   uid: user.uid,
                   email: email,
                   scheduleId: schedulesDocRef.id,
+                  isDarkMode: false,
                 }
                 const scheduleInitialData: ScheduleData = {
                   appointData: [],
                   uid: user.uid,
+                  sharing: false,
                 }
   
                 transaction.set(usersDocRef, userInitialData);
@@ -72,6 +88,8 @@ export function AuthProvider({ children }: {
                 setEmail(email);
                 setScheduleId(schedulesDocRef.id);
                 setAppointData([]);
+                setIsDarkMode(false);
+                setSharing(false);
               } else {
                 throw 'user error';
               }
@@ -109,10 +127,7 @@ export function AuthProvider({ children }: {
 
     const logout = async () => {
       await signOut(firebaseAuth);
-      setScheduleId(null);
-      setLoginUserId(null);
-      setEmail("");
-      setAppointData(undefined);
+      initDatas();
       navigate("/login", { replace: true });
     }
 
@@ -129,10 +144,7 @@ export function AuthProvider({ children }: {
           });
 
           await deleteUser(user).then(() => {
-            setScheduleId(null);
-            setLoginUserId(null);
-            setEmail("");
-            setAppointData(undefined);
+            initDatas();
           });
           
           navigate("/login", { replace: true });
@@ -146,7 +158,6 @@ export function AuthProvider({ children }: {
     }
 
     useLayoutEffect(() => {
-      console.log('useLayoutEffect');
       onAuthStateChanged(firebaseAuth, async (user) => {
         setAuthLoading(true);
         if (user) {
@@ -161,14 +172,16 @@ export function AuthProvider({ children }: {
               if (email === "") {
                 setEmail(userDocSnap.data().email);
               }
+              setIsDarkMode(userDocSnap.data().isDarkMode);
               if (!appointData) {
                 const schedulesDocRef = doc(firebaseDB, "schedules", userDocSnap.data().scheduleId);
                 await getDoc(schedulesDocRef)
                 .then((scheduleDosSnap) => {
                   if (scheduleDosSnap.exists()) {
                     setAppointData(scheduleDosSnap.data().appointData);
+                    setSharing(scheduleDosSnap.data().sharing);
                   }
-                })
+                });
               }
             }
           });
