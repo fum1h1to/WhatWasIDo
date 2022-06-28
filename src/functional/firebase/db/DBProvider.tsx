@@ -1,6 +1,6 @@
 import { createContext, useState, useContext } from 'react';
 import { firebaseDB } from '../index';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, runTransaction, updateDoc, where } from 'firebase/firestore';
 import { AppointmentModel } from '@devexpress/dx-react-scheduler';
 
 type DBContextType = {
@@ -12,7 +12,8 @@ type DBContextType = {
   setSharing: (sharing: boolean) => void;
   updateSharing: (scheduleId: string | null, data: boolean) => void;
   updateAppointData: (useId: string | null, data: AppointmentModel[]) => void;
-  searchUser: (email: string) => Promise<string | null>;
+  searchUser: (email: string) => Promise<{ uid: string | null, scheduleId: string | null } | null>;
+  getOtherUserAppointData: (otherScheduleId: string | null) => Promise<AppointmentModel[]>;
 }
 
 const DBContext = createContext<DBContextType>({} as DBContextType);
@@ -43,6 +44,19 @@ export function DBProvider({ children }: {
         });
     }
 
+    const getOtherUserAppointData = async (otherScheduleId: string | null) => {
+      if (otherScheduleId === "" || !otherScheduleId) {
+        throw 'otherScheduleIdの中身が空です。';
+      }
+      const otherUserDocRef = doc(firebaseDB, 'schedules', otherScheduleId);
+      const otherUserDocSnap = await getDoc(otherUserDocRef);
+      if (!otherUserDocSnap.exists()) {
+        throw 'DBでエラーが起こりました。';
+      }
+
+      return otherUserDocSnap.data().appointData;
+    }
+
     const updateAppointData = (scheduleId: string | null, data: AppointmentModel[]) => {
       if (scheduleId === "" || !scheduleId) {
         alert("エラー");
@@ -70,7 +84,10 @@ export function DBProvider({ children }: {
       await getDocs(query(usersRef, where('email', '==', email)))
       .then(snapshot => {
         snapshot.forEach(doc => {
-          result = doc.id;
+          result = {
+            uid: doc.id,
+            scheduleId: doc.data().scheduleId,
+          };
         });
       });
       
@@ -89,6 +106,7 @@ export function DBProvider({ children }: {
           updateSharing,
           updateAppointData,
           searchUser,
+          getOtherUserAppointData,
         }}
       >
         { 

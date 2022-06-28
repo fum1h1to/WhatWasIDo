@@ -1,25 +1,36 @@
 import { IconButton, InputBase, Paper } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
-import { Box } from "@mui/system";
+import CalenderView from './CalenderView';
+import { useState } from "react";
+import { AppointmentModel } from "@devexpress/dx-react-scheduler";
 
 const FindCalender = () => {
-  const { searchUser } = useDBContext();
+  const { searchUser, getOtherUserAppointData } = useDBContext();
+  const [ userAppointData, setUserAppointData ] = useState<AppointmentModel[]>([]);
 
-  // console.log(searchUser('20fi05@gmail.com'));
-
-  const userSearchHandleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const userSearchHandleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email"));
-    console.log(searchUser(email));
+    const result = await searchUser(email);
+    if(!result) {
+      alert('ユーザーが見つかりませんでした。');
+      return;
+    }
+    await getOtherUserAppointData(result.scheduleId).then((appointData) => {
+      setUserAppointData(appointData);
+    }).catch((error) => {
+      alert('ユーザーが見つかりませんでした。');
+      console.log(error);
+    });
   }
 
   return (
     <>
       <Paper
         component="form"
-        sx={{ mx: 'auto', p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
+        sx={{ mx: 'auto', mb: 4, p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}
         onSubmit={userSearchHandleSubmit}
       >
         <InputBase
@@ -31,6 +42,9 @@ const FindCalender = () => {
           <SearchIcon />
         </IconButton>
       </Paper>
+      <CalenderView 
+        appointData={userAppointData}
+      />
     </>
   );
 }
