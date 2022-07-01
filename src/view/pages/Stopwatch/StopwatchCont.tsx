@@ -9,7 +9,7 @@ import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import { useTimer } from "use-timer";
 
 export default function StopwatchCont() {
-  const { scheduleId } = useAuthContext()
+  const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   const [ startTime, setStartTime ] = useState<Date>(new Date());
   const [ endTime, setEndTime ] = useState<Date | null>(null);
@@ -71,8 +71,9 @@ export default function StopwatchCont() {
   const dataInputDialogAgree = () => {
     if (appointData) {
       let data = Object.create(appointData);
-      const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-      data = [...data, { id: startingAddedId, title: title, startDate: startTime, endDate: endTime, notes: memo }];
+      const serialNum = data.length > 0 ? data[data.length - 1].serialNum + 1 : 0;
+      const addedId = scheduleId + String(serialNum);
+      data = [...data, { id: addedId, userName: email, serialNum: serialNum, title: title, startDate: startTime, endDate: endTime, notes: memo }];
       updateAppointData(scheduleId, data);
     }
     dataInputDialogHandleClose();

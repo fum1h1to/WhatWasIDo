@@ -3,11 +3,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import CalenderView from './CalenderView';
 import { useState } from "react";
-import { AppointmentModel } from "@devexpress/dx-react-scheduler";
+import { AppointmentModel, Resource, ResourceInstance } from "@devexpress/dx-react-scheduler";
+import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 
 const FindCalender = () => {
   const { searchUser, getOtherUserAppointData } = useDBContext();
   const [ userAppointData, setUserAppointData ] = useState<AppointmentModel[]>([]);
+  const [ nowUsers, setNowUsers ] = useState<String[]>([]);
+  const [ resources, setResources ] = useState<Resource[]>([{ fieldName: 'userName', title: 'User Name', instances: [] }]);
 
   const userSearchHandleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -18,8 +21,19 @@ const FindCalender = () => {
       alert('ユーザーが見つかりませんでした。');
       return;
     }
+    if(nowUsers.includes(email)) {
+      alert('そのユーザーは既にカレンダーにあります。');
+      return;
+    }
     await getOtherUserAppointData(result.scheduleId).then((appointData) => {
-      setUserAppointData(appointData);
+      setNowUsers([...nowUsers, email]);
+      setUserAppointData([...userAppointData].concat(appointData));
+
+      let reso = Object.create(resources);
+      reso[0].instances = [...reso[0].instances, { id: email, text: email }];
+      setResources(reso);
+
+      alert('ユーザーのデータを追加しました。');
     }).catch((error) => {
       alert('ユーザーが見つかりませんでした。');
       console.log(error);
@@ -44,6 +58,7 @@ const FindCalender = () => {
       </Paper>
       <CalenderView 
         appointData={userAppointData}
+        resources={resources}
       />
     </>
   );

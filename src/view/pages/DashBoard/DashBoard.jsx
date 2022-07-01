@@ -36,14 +36,15 @@ const FormOverlay = ({ visible, children, onHide }) => {
 };
 
 export default function DashBoard() {
-  const { scheduleId } = useAuthContext()
+  const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   
   const commitChanges = ({ added, changed, deleted }) => {
     let data = Object.create(appointData);
     if (added) {
-      const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-      data = [...data, { id: startingAddedId, ...added }];
+      const serialNum = data.length > 0 ? data[data.length - 1].serialNum + 1 : 0;
+      const addedId = scheduleId + serialNum;
+      data = [...data, { id: addedId, userName: email, serialNum: serialNum ,...added }];
     }
     if (changed) {
       data = data.map(appointment => (

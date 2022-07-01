@@ -1,7 +1,6 @@
 import { ViewState } from "@devexpress/dx-react-scheduler";
-import { AllDayPanel, Appointments, AppointmentTooltip, DateNavigator, DayView, MonthView, Scheduler, TodayButton, Toolbar, ViewSwitcher, WeekView } from "@devexpress/dx-react-scheduler-material-ui";
+import { AllDayPanel, Appointments, AppointmentTooltip, DateNavigator, DayView, MonthView, Resources, Scheduler, TodayButton, Toolbar, ViewSwitcher, WeekView } from "@devexpress/dx-react-scheduler-material-ui";
 import { Paper } from "@mui/material";
-
 
 const CalenderView = (props) => {
 
@@ -27,6 +26,9 @@ const CalenderView = (props) => {
         <Appointments />
         <AllDayPanel />
         <AppointmentTooltip />
+        <Resources 
+          data={props.resources}
+        />
       </Scheduler>
     </Paper>
   );
