@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from 'react';
 import { firebaseDB } from '../index';
 import { collection, doc, getDoc, getDocs, query, runTransaction, updateDoc, where } from 'firebase/firestore';
 import { AppointmentModel } from '@devexpress/dx-react-scheduler';
+import { useThemeContext } from '../../../view/templates/AppRouter';
 
 type DBContextType = {
   appointData: AppointmentModel[] | undefined;
@@ -10,6 +11,7 @@ type DBContextType = {
   setAppointData: (data: AppointmentModel[] | undefined) => void;
   setIsDarkMode: (darkMode: boolean) => void;
   setSharing: (sharing: boolean) => void;
+  updateIsDarkMode: (userId: string | null, data: boolean) => void;
   updateSharing: (scheduleId: string | null, data: boolean) => void;
   updateAppointData: (useId: string | null, data: AppointmentModel[]) => void;
   searchUser: (email: string) => Promise<{ uid: string | null, scheduleId: string | null } | null>;
@@ -25,6 +27,8 @@ export function useDBContext() {
 export function DBProvider({ children }: {
     children?: React.ReactNode;
   }) {
+    const { setColorMode } = useThemeContext();
+
     const [appointData, setAppointData] = useState<AppointmentModel[] | undefined>(undefined);
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
     const [sharing, setSharing] = useState<boolean>(false);
@@ -42,6 +46,22 @@ export function DBProvider({ children }: {
           alert("DBでエラーがおきました。");
           console.log(error);
         });
+    }
+
+    const updateIsDarkMode = (userId: string | null, data: boolean) => {
+      if (userId === "" || !userId) {
+        alert("エラー");
+        return;
+      }
+      updateDoc(doc(firebaseDB, "users", userId), {isDarkMode: data})
+        .then(() => {
+          setIsDarkMode(data);
+        })
+        .catch((error) => {
+          alert("DBでエラーがおきました。");
+          console.log(error);
+        });
+      setColorMode(data ? 'dark' : 'light');
     }
 
     const getOtherUserAppointData = async (otherScheduleId: string | null) => {
@@ -103,6 +123,7 @@ export function DBProvider({ children }: {
           setAppointData,
           setIsDarkMode,
           setSharing,
+          updateIsDarkMode,
           updateSharing,
           updateAppointData,
           searchUser,

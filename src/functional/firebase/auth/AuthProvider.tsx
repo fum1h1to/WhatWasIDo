@@ -7,6 +7,7 @@ import { useDBContext } from '../db/DBProvider';
 import UserData from '../../../data/UserData';
 import ScheduleData from '../../../data/ScheduleData';
 import { useMediaQuery } from '@mui/material';
+import { useThemeContext } from '../../../view/templates/AppRouter';
 
 type AuthContextType = {
   loginUserId: string | null;
@@ -32,6 +33,8 @@ export function AuthProvider({ children }: {
     const [ scheduleId, setScheduleId ] = useState<string | null>(null);
     const [ authLoading, setAuthLoading ] = useState(true);
     const [ email, setEmail ] = useState("");
+
+    const { setColorMode } = useThemeContext();
     const { 
       appointData, setAppointData,
       isDarkMode, setIsDarkMode,
@@ -172,7 +175,10 @@ export function AuthProvider({ children }: {
               if (email === "") {
                 setEmail(userDocSnap.data().email);
               }
+
               setIsDarkMode(userDocSnap.data().isDarkMode);
+              setColorMode(userDocSnap.data().isDarkMode ? 'dark' : 'light');
+
               if (!appointData) {
                 const schedulesDocRef = doc(firebaseDB, "schedules", userDocSnap.data().scheduleId);
                 await getDoc(schedulesDocRef)

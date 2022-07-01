@@ -20,7 +20,7 @@ export default function UserAccountSetting(props: {
   open: boolean,
   onClose: () => void,
 }) {
-  const { deleteAccount, scheduleId } = useAuthContext();
+  const { loginUserId, deleteAccount, scheduleId } = useAuthContext();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const deleteDialogHandleOpen = () => {
@@ -33,12 +33,13 @@ export default function UserAccountSetting(props: {
     deleteAccount();
   }
 
-  const { colorMode, setColorMode } = useThemeContext();
+  const { colorMode } = useThemeContext();
+  const { updateIsDarkMode } = useDBContext();
   const colorModehandleChange = (
     event: MouseEvent<HTMLElement>,
     colorMode: "dark" | "light",
   ) => {
-    setColorMode(colorMode);
+    updateIsDarkMode(loginUserId, colorMode === 'dark' ? true : false);
   }
 
   const { sharing, updateSharing } = useDBContext();

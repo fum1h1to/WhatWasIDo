@@ -16,7 +16,7 @@ service cloud.firestore {
     }
 
     match /schedules/{scheduleId} {
-     allow read: if resource.data.sharing;
+      allow read: if resource.data.sharing;
       allow write, read: if resource.data.uid == request.auth.uid || request.resource.data.uid == request.auth.uid;
     }
   }
