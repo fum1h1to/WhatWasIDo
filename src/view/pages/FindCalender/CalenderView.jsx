@@ -11,12 +11,12 @@ const CalenderView = (props) => {
       >
         <ViewState />
         <DayView
-          startDayHour={7}
-          endDayHour={23}
+          startDayHour={0}
+          endDayHour={24}
         />
         <WeekView
-          startDayHour={7}
-          endDayHour={23}
+          startDayHour={0}
+          endDayHour={24}
         />
         <MonthView />
         <Toolbar />

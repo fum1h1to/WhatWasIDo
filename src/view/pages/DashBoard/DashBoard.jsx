@@ -69,12 +69,12 @@ export default function DashBoard() {
         />
         <IntegratedEditing />
         <DayView
-          startDayHour={7}
-          endDayHour={23}
+          startDayHour={0}
+          endDayHour={24}
         />
         <WeekView
-          startDayHour={7}
-          endDayHour={23}
+          startDayHour={0}
+          endDayHour={24}
         />
         <MonthView />
         <Toolbar />
