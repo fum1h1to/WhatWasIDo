@@ -1,7 +1,8 @@
 import { Grid } from "@mui/material";
+import { memo } from "react";
 import TimerCont from "./TimerCont";
 
-export default function Timer() {
+const Timer = memo(() => {
   return (
     <Grid container alignItems="center" direction="column">
       <Grid item>
@@ -9,4 +10,5 @@ export default function Timer() {
       </Grid>
     </Grid>
   );
-}
+})
+export default Timer;

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -7,12 +6,11 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Copyright from '../../components/Copyright';
 import { Link } from "react-router-dom";
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
+import { memo } from 'react';
 
-
-export default function SignUpCont() {
+const SignUpCont = memo(() => {
   const { signup } = useAuthContext();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -88,8 +86,8 @@ export default function SignUpCont() {
             </Link> 
           </Grid>
         </Grid>
-        <Copyright sx={{ mt: 5 }} />
       </Box>
     </Box>
   );
-}
+})
+export default SignUpCont;

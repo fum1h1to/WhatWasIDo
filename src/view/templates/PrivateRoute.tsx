@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
-import { Navigate, } from "react-router-dom";
-import { useAuthContext } from "./AuthProvider";
+import { memo, ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { useAuthContext } from "../../functional/firebase/auth/AuthProvider";
 
-export const PrivateRoute = ({ children }: {
+export const PrivateRoute = memo(({ children }: {
   children?: ReactNode;
 }) => {
   const { loginUserId } = useAuthContext();
@@ -17,4 +17,4 @@ export const PrivateRoute = ({ children }: {
       <Navigate to={`/login`} />
     )
   }
-}
+});

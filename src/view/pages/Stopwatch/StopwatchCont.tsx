@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Grid, Modal, Slider, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { zeroPadding } from "../../../utils";
 
@@ -8,7 +8,7 @@ import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import { useTimer } from "use-timer";
 
-export default function StopwatchCont() {
+const StopwatchCont = memo(() => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   const [ startTime, setStartTime ] = useState<Date>(new Date());
@@ -161,4 +161,6 @@ export default function StopwatchCont() {
       </Dialog>
     </div>
   );
-}
+});
+
+export default StopwatchCont;

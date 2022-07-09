@@ -19,8 +19,9 @@ import { Box, Modal } from '@mui/material';
 import { useDBContext } from '../../../functional/firebase/db/DBProvider';
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import style from './style.module.scss';
+import { memo } from 'react';
 
-const FormOverlay = ({ visible, children, onHide }) => {
+const FormOverlay = memo(({ visible, children, onHide }) => {
   return (
     <Modal 
       open={visible}
@@ -33,9 +34,9 @@ const FormOverlay = ({ visible, children, onHide }) => {
       </Box>
     </Modal>
   );
-};
+});
 
-export default function DashBoard() {
+const DashBoard = memo(() => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   
@@ -94,4 +95,6 @@ export default function DashBoard() {
       </Scheduler>
     </Paper>
   );
-}
+})
+
+export default DashBoard;

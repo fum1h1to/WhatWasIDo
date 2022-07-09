@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
@@ -14,7 +14,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
 import UserAcountButton from './UserAcountButton';
-import Copyright from '../../components/Copyright';
 
 const drawerWidth: number = 240;
 
@@ -66,9 +65,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function AppFrame({ children }: {
+const AppFrame = memo(({ children }: {
   children?: React.ReactNode;
-  }) {
+}) => {
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -142,9 +141,10 @@ export default function AppFrame({ children }: {
         <Toolbar />
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           { children }
-          <Copyright sx={{ pt: 4 }} />
         </Container>
       </Box>
     </Box>
   );
-}
+});
+
+export default AppFrame;

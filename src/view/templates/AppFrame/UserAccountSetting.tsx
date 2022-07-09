@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Modal, Stack, Switch, ToggleButton, ToggleButtonGroup, Typography, useTheme } from "@mui/material";
 import ClearIcon from '@mui/icons-material/Clear';
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
-import { MouseEvent, useState } from "react";
+import { memo, MouseEvent, useState } from "react";
 import { useThemeContext } from "../AppRouter";
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 
@@ -16,10 +16,10 @@ const style = {
   p: 4,
 }
 
-export default function UserAccountSetting(props: {
+const UserAccountSetting = memo((props: {
   open: boolean,
   onClose: () => void,
-}) {
+}) => {
   const { loginUserId, deleteAccount, scheduleId } = useAuthContext();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -128,4 +128,6 @@ export default function UserAccountSetting(props: {
       </Box>
     </Modal>
   )
-}
+});
+
+export default UserAccountSetting;

@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { useTimer } from "use-timer";
 import { zeroPadding } from "../../../utils";
 
@@ -7,12 +7,11 @@ import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 
-
-export default function TimerUsing(props: {
+const TimerUsing = memo((props: {
   initialTime: number,
   timerOrStop: "Timer" | "Stopwatch",
   onEnd: () => void,
-}) {
+}) => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   const [ startTime, setStartTime ] = useState<Date>(new Date());
@@ -150,4 +149,7 @@ export default function TimerUsing(props: {
       </Dialog>
     </div>
   );
-}
+});
+
+export default TimerUsing;
+ 

@@ -2,9 +2,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import SignUpCont from './SignUpCont';
+import { memo } from 'react';
 
-export default function SignUp(props: any) {
-
+const SignUp = memo(() => {
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
       <CssBaseline />
@@ -27,4 +27,5 @@ export default function SignUp(props: any) {
       </Grid>
     </Grid>
   );
-}
+})
+export default SignUp;

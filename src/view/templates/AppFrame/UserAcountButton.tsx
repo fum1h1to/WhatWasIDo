@@ -11,10 +11,10 @@ import IconButton from '@mui/material/IconButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import { Grid } from '@mui/material';
-import { MouseEvent, useState } from 'react';
+import { memo, MouseEvent, useState } from 'react';
 import UserAccountSetting from './UserAccountSetting';
 
-export default function UserAcountButton() {
+const UserAcountButton = memo(() => {
   const { logout, email } = useAuthContext();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -108,4 +108,6 @@ export default function UserAcountButton() {
       />
     </>
   );
-}
+});
+
+export default UserAcountButton;

@@ -2,9 +2,9 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import LogInCont from './LogInCont';
+import { memo } from 'react';
 
-export default function Login(props: any) {
-
+const Login = memo(() => {
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>
       <CssBaseline />
@@ -27,4 +27,6 @@ export default function Login(props: any) {
       </Grid>
     </Grid>
   );
-}
+});
+
+export default Login;

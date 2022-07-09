@@ -1,7 +1,8 @@
 import { Grid } from "@mui/material";
+import { memo } from "react";
 import StopwatchCont from "./StopwatchCont";
 
-export default function Stopwatch() {
+const Stopwatch = memo(() => {
   return (
     <Grid container alignItems="center" direction="column">
       <Grid item>
@@ -9,4 +10,5 @@ export default function Stopwatch() {
       </Grid>
     </Grid>
   );
-}
+});
+export default Stopwatch;

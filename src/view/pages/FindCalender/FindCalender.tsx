@@ -2,11 +2,10 @@ import { IconButton, InputBase, Paper } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import CalenderView from './CalenderView';
-import { useState } from "react";
-import { AppointmentModel, Resource, ResourceInstance } from "@devexpress/dx-react-scheduler";
-import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
+import { memo, useState } from "react";
+import { AppointmentModel, Resource } from "@devexpress/dx-react-scheduler";
 
-const FindCalender = () => {
+const FindCalender = memo(() => {
   const { searchUser, getOtherUserAppointData } = useDBContext();
   const [ userAppointData, setUserAppointData ] = useState<AppointmentModel[]>([]);
   const [ nowUsers, setNowUsers ] = useState<String[]>([]);
@@ -62,6 +61,6 @@ const FindCalender = () => {
       />
     </>
   );
-}
+});
 
 export default FindCalender;

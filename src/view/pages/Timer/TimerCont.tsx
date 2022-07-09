@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogTitle, Divider, Grid, Modal, Slider, Stack, TextField } from "@mui/material";
-import { useState } from "react";
+import { memo, useState } from "react";
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { zeroPadding } from "../../../utils";
 import TimerUsing from "./TimerUsing";
@@ -15,8 +15,7 @@ const modalStyle = {
   p: 4,
 };
 
-export default function TimerCont() {
-
+const TimerCont = memo(() => {
   const [second, setSecound] = useState(0);
   const [minute, setMinute] = useState(3);
   const [hour, setHour] = useState(0);
@@ -200,4 +199,6 @@ export default function TimerCont() {
       </Modal>
     </div>
   );
-}
+});
+
+export default TimerCont;
