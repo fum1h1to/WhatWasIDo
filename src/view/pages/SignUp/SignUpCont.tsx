@@ -8,10 +8,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
-import { memo } from 'react';
+import { memo, useState } from 'react';
+import { Divider } from '@mui/material';
+import GoogleButton from 'react-google-button';
+import { useThemeContext } from '../../templates/AppRouter';
 
 const SignUpCont = memo(() => {
-  const { signup } = useAuthContext();
+  const { signup, googleSignin } = useAuthContext();
+  const { colorMode } = useThemeContext();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -22,6 +26,10 @@ const SignUpCont = memo(() => {
 
     signup(email, password, confirmPassword);
   };
+
+  const googleLoginHandleClick = () => {
+    googleSignin(true);
+  }
 
   return (
     <Box
@@ -39,7 +47,7 @@ const SignUpCont = memo(() => {
       <Typography component="h1" variant="h5">
         Sign up
       </Typography>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1, width: 1 }}>
         <TextField
           margin="normal"
           required
@@ -77,11 +85,20 @@ const SignUpCont = memo(() => {
         >
           Sign Up
         </Button>
+        <Divider sx={{ my: 2 }}>OR</Divider>
+        <Grid container spacing={2} sx={{ mb: 5 }}>
+          <Grid item xs={6}>
+            <GoogleButton style={{width: "auto"}}
+              type={colorMode}
+              onClick={googleLoginHandleClick}
+            />
+          </Grid>
+        </Grid>
         <Grid container justifyContent="flex-end">
           <Grid item>
             <Link to="/login">
               <MUILink variant="body2">
-                Already have an account? Sign in
+                すでにアカウントを持っている方はこちら
               </MUILink>
             </Link> 
           </Grid>

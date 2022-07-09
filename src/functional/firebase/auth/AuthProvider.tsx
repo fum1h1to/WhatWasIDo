@@ -1,12 +1,11 @@
-import { createContext, useState, useContext, useLayoutEffect, useEffect } from 'react';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser, browserLocalPersistence, browserSessionPersistence, setPersistence } from "firebase/auth";
+import { createContext, useState, useContext, useLayoutEffect } from 'react';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser, browserLocalPersistence, browserSessionPersistence, setPersistence, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
-import { collection, deleteDoc, doc, getDoc, runTransaction, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, runTransaction, } from 'firebase/firestore';
 import { useDBContext } from '../db/DBProvider';
 import UserData from '../../../data/UserData';
 import ScheduleData from '../../../data/ScheduleData';
-import { useMediaQuery } from '@mui/material';
 import { useThemeContext } from '../../../view/templates/AppRouter';
 
 type AuthContextType = {
@@ -17,6 +16,7 @@ type AuthContextType = {
   signup: (email: string, password: string, confirmPassword: string) => void;
   login: (email: string, password: string, remember: boolean) => void;
   logout: () => void;
+  googleSignin: (remember: boolean) => void;
   deleteAccount: () => void;
 }
 
@@ -111,6 +111,11 @@ export function AuthProvider({ children }: {
     };
 
     const login = async (email: string, password: string, remember: boolean) => {
+      if (email === "" || password === "") {
+        alert("未入力の項目があります。");
+        return;
+      }
+
       let however;
       if (remember) {
         however = browserLocalPersistence;
@@ -160,6 +165,71 @@ export function AuthProvider({ children }: {
       }
     }
 
+    const googleProvider = new GoogleAuthProvider();
+    const googleSignin = async (remember: boolean) => {
+      let however;
+      if (remember) {
+        however = browserLocalPersistence;
+      } else {
+        however = browserSessionPersistence;
+      }
+
+      await setPersistence(firebaseAuth, however).then(async () => {
+        await signInWithPopup(firebaseAuth, googleProvider)
+        .then(async (result) => {
+          // const credential = GoogleAuthProvider.credentialFromResult(result);
+          // const token = credential.accessToken;
+          try {
+            await runTransaction(firebaseDB, async (transaction) => {
+              const user = result.user;
+              if (user) {
+                const isUserCreatedRef = doc(firebaseDB, "users", user.uid);
+                const isUserCreatedDoc = await transaction.get(isUserCreatedRef);
+                if (isUserCreatedDoc.exists()) {
+  
+                } else {
+                  const usersDocRef = doc(firebaseDB, "users", user.uid);
+                  const schedulesDocRef = doc(collection(firebaseDB, "schedules"));
+  
+                  const userInitialData: UserData = {
+                    uid: user.uid,
+                    email: (user.email ? user.email : ""),
+                    scheduleId: schedulesDocRef.id,
+                    isDarkMode: false,
+                  }
+                  const scheduleInitialData: ScheduleData = {
+                    appointData: [],
+                    uid: user.uid,
+                    sharing: false,
+                  }
+  
+                  transaction.set(usersDocRef, userInitialData);
+                  transaction.set(schedulesDocRef, scheduleInitialData);
+  
+                  setLoginUserId(user.uid);
+                  setEmail((user.email ? user.email : ""));
+                  setScheduleId(schedulesDocRef.id);
+                  setAppointData([]);
+                  setIsDarkMode(false);
+                  setSharing(false);
+                }
+              } else {
+                throw 'user error';
+              }
+            });
+  
+            navigate("/app", { replace: true });
+          } catch (e) {
+            alert("ユーザー情報をデータベースに書き込む際にエラーが起きました。");
+            console.log(e);
+          }
+        }).catch((error) => {
+          alert('googleでサインアップできませんでした。');
+          console.log(error);
+        });
+      });
+    }
+
     useLayoutEffect(() => {
       onAuthStateChanged(firebaseAuth, async (user) => {
         setAuthLoading(true);
@@ -206,6 +276,7 @@ export function AuthProvider({ children }: {
           signup,
           login,
           logout,
+          googleSignin,
           deleteAccount,
         }}
       >

@@ -11,9 +11,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
+import {  Divider } from '@mui/material';
+import GoogleButton from 'react-google-button';
+import { useThemeContext } from '../../templates/AppRouter';
 
 const LogInCont = React.memo(() => {
-  const { login } = useAuthContext();
+  const { login, googleSignin } = useAuthContext();
+  const { colorMode } = useThemeContext();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -23,6 +27,10 @@ const LogInCont = React.memo(() => {
     const remember = Boolean(data.get("remember"));
     login(email, password, remember);
   };
+
+  const googleLoginHandleClick = () => {
+    googleSignin(true);
+  }
 
   return (
     <Box
@@ -40,7 +48,7 @@ const LogInCont = React.memo(() => {
       <Typography component="h1" variant="h5">
         Login
       </Typography>
-      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+      <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1, width: 1 }}>
         <TextField
           margin="normal"
           required
@@ -75,11 +83,20 @@ const LogInCont = React.memo(() => {
         >
           Login
         </Button>
+        <Divider sx={{ my: 2 }}>OR</Divider>
+        <Grid container spacing={2} sx={{ mb: 5 }}>
+          <Grid item xs={6}>
+            <GoogleButton style={{width: "auto"}}
+              type={colorMode}
+              onClick={googleLoginHandleClick}
+            />
+          </Grid>
+        </Grid>
         <Grid container justifyContent="flex-end">
           <Grid item>
             <Link to="/signup">
               <MUILink variant="body2">
-              "Don't have an account? Sign Up"
+                アカウントを持っていない方はこちら
               </MUILink>
             </Link> 
           </Grid>

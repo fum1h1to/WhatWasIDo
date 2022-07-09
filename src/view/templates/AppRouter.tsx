@@ -12,6 +12,7 @@ import Login from '../pages/Login/Login';
 import SignUp from '../pages/SignUp/SignUp';
 import FindCalender from '../pages/FindCalender/FindCalender';
 import { Layout } from './Layout';
+import { useMediaQuery } from '@mui/material';
 
 type ThemeContextType = {
   colorMode: "light" | "dark";
@@ -25,7 +26,8 @@ export function useThemeContext() {
 }
 
 export default function App() {
-  const [colorMode, setColorMode] = useState<"light" | "dark">("light");
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+  const [colorMode, setColorMode] = useState<"light" | "dark">(prefersDarkMode ? "dark" : "light");
   const mdTheme = createTheme({
     palette: {
       mode: colorMode,
