@@ -14,6 +14,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { mainListItems, secondaryListItems } from './listItems';
 import UserAcountButton from './UserAcountButton';
+import { useLocation } from 'react-router-dom';
 
 const drawerWidth: number = 240;
 
@@ -68,6 +69,18 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 const AppFrame = memo(({ children }: {
   children?: React.ReactNode;
 }) => {
+  const location = useLocation();
+
+  const getLocationName = () => {
+    switch (location.pathname) {
+      case '/app': return 'Dashboard';
+      case '/app/timer': return 'Timer';
+      case '/app/stopwatch': return 'StopWatch';
+      case '/app/findCalender': return 'Find Calendar';
+      default: return '';
+    }
+  }
+
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
@@ -101,7 +114,7 @@ const AppFrame = memo(({ children }: {
             noWrap
             sx={{ flexGrow: 1 }}
           >
-            Dashboard
+            {getLocationName()}
           </Typography>
           <UserAcountButton />
         </Toolbar>
