@@ -40,7 +40,7 @@ const DashBoard = memo(() => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   
-  const commitChanges = ({ added, changed, deleted }) => {
+  const commitChanges = async ({ added, changed, deleted }) => {
     let data = Object.create(appointData);
     if (added) {
       const serialNum = data.length > 0 ? data[data.length - 1].serialNum + 1 : 0;
@@ -55,7 +55,7 @@ const DashBoard = memo(() => {
       data = data.filter(appointment => appointment.id !== deleted);
     }
     
-    updateAppointData(scheduleId, data);
+    await updateAppointData(scheduleId, data);
   }
 
   return (

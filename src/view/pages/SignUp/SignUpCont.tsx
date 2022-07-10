@@ -11,24 +11,24 @@ import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import { memo, useState } from 'react';
 import { Divider } from '@mui/material';
 import GoogleButton from 'react-google-button';
-import { useThemeContext } from '../../templates/AppRouter';
+import { useRootContext } from '../../templates/App';
 
 const SignUpCont = memo(() => {
   const { signup, googleSignin } = useAuthContext();
-  const { colorMode } = useThemeContext();
+  const { colorMode } = useRootContext();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email"));
     const password = String(data.get("password"));
     const confirmPassword = String(data.get("passwordAgain"))
 
-    signup(email, password, confirmPassword);
+    await signup(email, password, confirmPassword);
   };
 
-  const googleLoginHandleClick = () => {
-    googleSignin(true);
+  const googleLoginHandleClick = async () => {
+    await googleSignin(true);
   }
 
   return (

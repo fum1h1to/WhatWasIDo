@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import ClearIcon from '@mui/icons-material/Clear';
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { memo, MouseEvent, useState } from "react";
-import { useThemeContext } from "../AppRouter";
+import { useRootContext } from "../App";
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 
 const style = {
@@ -21,6 +21,8 @@ const UserAccountSetting = memo((props: {
   onClose: () => void,
 }) => {
   const { loginUserId, deleteAccount, scheduleId } = useAuthContext();
+  const { colorMode } = useRootContext();
+  const { updateIsDarkMode } = useDBContext();
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const deleteDialogHandleOpen = () => {
@@ -29,22 +31,20 @@ const UserAccountSetting = memo((props: {
   const deleteDialogHandleClose = () => {
     setOpenDeleteDialog(false);
   }
-  const okDelete = () => {
-    deleteAccount();
+  const okDelete = async () => {
+    await deleteAccount();
   }
 
-  const { colorMode } = useThemeContext();
-  const { updateIsDarkMode } = useDBContext();
-  const colorModehandleChange = (
+  const colorModehandleChange = async (
     event: MouseEvent<HTMLElement>,
     colorMode: "dark" | "light",
   ) => {
-    updateIsDarkMode(loginUserId, colorMode === 'dark' ? true : false);
+    await updateIsDarkMode(loginUserId, colorMode === 'dark' ? true : false);
   }
 
   const { sharing, updateSharing } = useDBContext();
-  const sharinghandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    updateSharing(scheduleId, event.target.checked);
+  const sharinghandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    await updateSharing(scheduleId, event.target.checked);
   }
 
   return (

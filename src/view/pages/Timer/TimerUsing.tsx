@@ -72,13 +72,13 @@ const TimerUsing = memo((props: {
     dataInputDialogHandleClose();
     props.onEnd();
   }
-  const dataInputDialogAgree = () => {
+  const dataInputDialogAgree = async () => {
     if (appointData) {
       let data = Object.create(appointData);
       const serialNum = data.length > 0 ? data[data.length - 1].serialNum + 1 : 0;
       const addedId = scheduleId + String(serialNum);
       data = [...data, { id: addedId, userName: email, serialNum: serialNum, title: title, startDate: startTime, endDate: endTime, notes: memo }];
-      updateAppointData(scheduleId, data);
+      await updateAppointData(scheduleId, data);
     }
     dataInputDialogHandleClose();
     props.onEnd();

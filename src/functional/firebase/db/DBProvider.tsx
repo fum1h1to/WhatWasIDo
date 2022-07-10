@@ -2,7 +2,7 @@ import { createContext, useState, useContext } from 'react';
 import { firebaseDB } from '../index';
 import { collection, doc, getDoc, getDocs, query, runTransaction, updateDoc, where } from 'firebase/firestore';
 import { AppointmentModel } from '@devexpress/dx-react-scheduler';
-import { useThemeContext } from '../../../view/templates/AppRouter';
+import { useRootContext } from '../../../view/templates/App';
 
 type DBContextType = {
   appointData: AppointmentModel[] | undefined;
@@ -11,9 +11,9 @@ type DBContextType = {
   setAppointData: (data: AppointmentModel[] | undefined) => void;
   setIsDarkMode: (darkMode: boolean) => void;
   setSharing: (sharing: boolean) => void;
-  updateIsDarkMode: (userId: string | null, data: boolean) => void;
-  updateSharing: (scheduleId: string | null, data: boolean) => void;
-  updateAppointData: (useId: string | null, data: AppointmentModel[]) => void;
+  updateIsDarkMode: (userId: string | null, data: boolean) => Promise<void>;
+  updateSharing: (scheduleId: string | null, data: boolean) => Promise<void>;
+  updateAppointData: (useId: string | null, data: AppointmentModel[]) => Promise<void>;
   searchUser: (email: string) => Promise<{ uid: string | null, scheduleId: string | null } | null>;
   getOtherUserAppointData: (otherScheduleId: string | null) => Promise<AppointmentModel[]>;
 }
@@ -27,18 +27,19 @@ export function useDBContext() {
 export function DBProvider({ children }: {
     children?: React.ReactNode;
   }) {
-    const { setColorMode } = useThemeContext();
+    const { setColorMode, setIsLoading } = useRootContext();
 
     const [appointData, setAppointData] = useState<AppointmentModel[] | undefined>(undefined);
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
     const [sharing, setSharing] = useState<boolean>(false);
 
-    const updateSharing = (scheduleId: string | null, data: boolean) => {
+    const updateSharing = async (scheduleId: string | null, data: boolean) => {
       if (scheduleId === "" || !scheduleId) {
         alert("エラー");
         return;
       }
-      updateDoc(doc(firebaseDB, "schedules", scheduleId), {sharing: data})
+      setIsLoading(true);
+      await updateDoc(doc(firebaseDB, "schedules", scheduleId), {sharing: data})
         .then(() => {
           setSharing(data);
         })
@@ -46,14 +47,18 @@ export function DBProvider({ children }: {
           alert("DBでエラーがおきました。");
           console.log(error);
         });
+
+      setIsLoading(false);
     }
 
-    const updateIsDarkMode = (userId: string | null, data: boolean) => {
+    const updateIsDarkMode = async (userId: string | null, data: boolean) => {
       if (userId === "" || !userId) {
         alert("エラー");
         return;
       }
-      updateDoc(doc(firebaseDB, "users", userId), {isDarkMode: data})
+
+      setIsLoading(true);
+      await updateDoc(doc(firebaseDB, "users", userId), {isDarkMode: data})
         .then(() => {
           setIsDarkMode(data);
         })
@@ -62,14 +67,18 @@ export function DBProvider({ children }: {
           console.log(error);
         });
       setColorMode(data ? 'dark' : 'light');
+      setIsLoading(false);
     }
 
     const getOtherUserAppointData = async (otherScheduleId: string | null) => {
       if (otherScheduleId === "" || !otherScheduleId) {
         throw 'otherScheduleIdの中身が空です。';
       }
+
+      setIsLoading(true);
       const otherUserDocRef = doc(firebaseDB, 'schedules', otherScheduleId);
       const otherUserDocSnap = await getDoc(otherUserDocRef);
+      setIsLoading(false);
       if (!otherUserDocSnap.exists()) {
         throw 'DBでエラーが起こりました。';
       }
@@ -77,18 +86,20 @@ export function DBProvider({ children }: {
       return otherUserDocSnap.data().appointData;
     }
 
-    const updateAppointData = (scheduleId: string | null, data: AppointmentModel[]) => {
+    const updateAppointData = async (scheduleId: string | null, data: AppointmentModel[]) => {
       if (scheduleId === "" || !scheduleId) {
         alert("エラー");
         return;
       }
+
+      setIsLoading(true);
       data.map(appointment => {
         appointment.startDate = new Date(appointment.startDate).toISOString();
         if (appointment.endDate) {
           appointment.endDate = new Date(appointment.endDate).toISOString();
         }
       });
-      updateDoc(doc(firebaseDB, "schedules", scheduleId), {appointData: data})
+      await updateDoc(doc(firebaseDB, "schedules", scheduleId), {appointData: data})
         .then(() => {
           setAppointData(data);
         })
@@ -96,9 +107,13 @@ export function DBProvider({ children }: {
           alert("DBでエラーがおきました。");
           console.log(error);
         });
+
+      setIsLoading(false);
     }
 
     const searchUser = async (email: string) => {
+      setIsLoading(true);
+
       const usersRef = collection(firebaseDB, "users");
       let result = null;
       await getDocs(query(usersRef, where('email', '==', email)))
@@ -111,6 +126,7 @@ export function DBProvider({ children }: {
         });
       });
       
+      setIsLoading(false);
       return result;
     }
     

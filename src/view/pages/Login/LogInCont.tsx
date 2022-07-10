@@ -13,23 +13,23 @@ import { Link } from "react-router-dom";
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import {  Divider } from '@mui/material';
 import GoogleButton from 'react-google-button';
-import { useThemeContext } from '../../templates/AppRouter';
+import { useRootContext } from '../../templates/App';
 
 const LogInCont = React.memo(() => {
   const { login, googleSignin } = useAuthContext();
-  const { colorMode } = useThemeContext();
+  const { colorMode } = useRootContext();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email"));
     const password = String(data.get("password"));
     const remember = Boolean(data.get("remember"));
-    login(email, password, remember);
+    await login(email, password, remember);
   };
 
-  const googleLoginHandleClick = () => {
-    googleSignin(true);
+  const googleLoginHandleClick = async () => {
+    await googleSignin(true);
   }
 
   return (

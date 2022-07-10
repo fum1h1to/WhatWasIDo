@@ -13,9 +13,10 @@ import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import { Grid } from '@mui/material';
 import { memo, MouseEvent, useState } from 'react';
 import UserAccountSetting from './UserAccountSetting';
+import { useRootContext } from '../App';
 
 const UserAcountButton = memo(() => {
-  const { logout, email } = useAuthContext();
+  const { logout, email } = useAuthContext(); 
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -32,6 +33,10 @@ const UserAcountButton = memo(() => {
   }
   const UserAccountSettingHandleOpen = () => {
     setOpenUserAccountSetting(true);
+  }
+
+  const logoutHandleClick = async () => {
+    await logout();
   }
 
 
@@ -95,7 +100,7 @@ const UserAcountButton = memo(() => {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={logout}>
+        <MenuItem onClick={logoutHandleClick}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

@@ -6,18 +6,17 @@ import { collection, doc, getDoc, runTransaction, } from 'firebase/firestore';
 import { useDBContext } from '../db/DBProvider';
 import UserData from '../../../data/UserData';
 import ScheduleData from '../../../data/ScheduleData';
-import { useThemeContext } from '../../../view/templates/AppRouter';
+import { useRootContext } from '../../../view/templates/App';
 
 type AuthContextType = {
   loginUserId: string | null;
   scheduleId: string | null;
   email: string;
-  authLoading: boolean;
-  signup: (email: string, password: string, confirmPassword: string) => void;
-  login: (email: string, password: string, remember: boolean) => void;
-  logout: () => void;
-  googleSignin: (remember: boolean) => void;
-  deleteAccount: () => void;
+  signup: (email: string, password: string, confirmPassword: string) => Promise<void>;
+  login: (email: string, password: string, remember: boolean) => Promise<void>;
+  logout: () => Promise<void>;
+  googleSignin: (remember: boolean) => Promise<void>;
+  deleteAccount: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -31,10 +30,10 @@ export function AuthProvider({ children }: {
   }) {
     const [ loginUserId, setLoginUserId ] = useState<string | null>(null);
     const [ scheduleId, setScheduleId ] = useState<string | null>(null);
-    const [ authLoading, setAuthLoading ] = useState(true);
     const [ email, setEmail ] = useState("");
 
-    const { setColorMode } = useThemeContext();
+    const { isLoading, setIsLoading } = useRootContext();
+    const { setColorMode } = useRootContext();
     const { 
       appointData, setAppointData,
       isDarkMode, setIsDarkMode,
@@ -62,7 +61,8 @@ export function AuthProvider({ children }: {
         alert("パスワードが一致しません。もう一度お試しください。");
         return;
       }
-
+      
+      setIsLoading(true);
       await createUserWithEmailAndPassword(firebaseAuth, email, password)
         .then(async (result) => {
           try {
@@ -108,6 +108,8 @@ export function AuthProvider({ children }: {
           alert("ユーザー追加時にエラーが起きました。");
           console.log(e);
         });
+
+      setIsLoading(false);
     };
 
     const login = async (email: string, password: string, remember: boolean) => {
@@ -116,6 +118,7 @@ export function AuthProvider({ children }: {
         return;
       }
 
+      setIsLoading(true);
       let however;
       if (remember) {
         however = browserLocalPersistence;
@@ -131,15 +134,20 @@ export function AuthProvider({ children }: {
             alert("エラーが起きました。");
           });
         });
+        
+      setIsLoading(false);
     };
 
     const logout = async () => {
+      setIsLoading(true);
       await signOut(firebaseAuth);
       initDatas();
       navigate("/login", { replace: true });
+      setIsLoading(false);
     }
 
     const deleteAccount = async () => {
+      setIsLoading(true);
       const user = firebaseAuth.currentUser;
       if (user && scheduleId) {
         try {
@@ -163,10 +171,12 @@ export function AuthProvider({ children }: {
       } else {
         alert("削除できませんでした。");
       }
+      setIsLoading(false);
     }
 
     const googleProvider = new GoogleAuthProvider();
     const googleSignin = async (remember: boolean) => {
+      setIsLoading(true);
       let however;
       if (remember) {
         however = browserLocalPersistence;
@@ -228,11 +238,14 @@ export function AuthProvider({ children }: {
           console.log(error);
         });
       });
+      
+      setIsLoading(false);
     }
 
     useLayoutEffect(() => {
       onAuthStateChanged(firebaseAuth, async (user) => {
-        setAuthLoading(true);
+
+        setIsLoading(true);
         if (user) {
           const userDocRef = doc(firebaseDB, "users", user.uid);
           await getDoc(userDocRef)
@@ -262,16 +275,15 @@ export function AuthProvider({ children }: {
             }
           });
         }
-        setAuthLoading(false);
-      })
-    }, [])
+        setIsLoading(false);
+      });
+    }, []);
     
     return (
       <AuthContext.Provider 
         value={{
           loginUserId,
           scheduleId,
-          authLoading,
           email,
           signup,
           login,
@@ -280,12 +292,7 @@ export function AuthProvider({ children }: {
           deleteAccount,
         }}
       >
-        { authLoading ? (
-            <></>
-          ) : (
-            children
-          )
-        }
+        { children }
       </AuthContext.Provider>
     );
 }
