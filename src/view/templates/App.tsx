@@ -20,6 +20,8 @@ type RootContextType = {
   setColorMode: (mode: "light" | "dark") => void;
   isLoading: boolean;
   setIsLoading: (loading: boolean) => void;
+  isAuthLoading: boolean;
+  setIsAuthLoading: (loading: boolean) => void;
 }
 
 const RootContext = createContext<RootContextType>({} as RootContextType);
@@ -78,7 +80,8 @@ const AppRouter = memo(() => {
 export default function App() {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const [colorMode, setColorMode] = useState<"light" | "dark">(prefersDarkMode ? "dark" : "light");
-  const [ isLoading, setIsLoading ] = useState(true);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ isAuthLoading, setIsAuthLoading ] = useState(true);
 
   const mdTheme = createTheme({
     palette: {
@@ -89,6 +92,10 @@ export default function App() {
     }
   });
 
+  useEffect(() => {
+    console.log(isAuthLoading);
+  }, [isAuthLoading]);
+
   return (
     <RootContext.Provider
       value={{
@@ -96,6 +103,8 @@ export default function App() {
         setColorMode,
         isLoading,
         setIsLoading,
+        isAuthLoading,
+        setIsAuthLoading
       }}
     >
       <ThemeProvider theme={mdTheme}>
@@ -106,7 +115,7 @@ export default function App() {
             top: 0,
             left: 0,
             zIndex: 9999,
-            display: (isLoading ? 'block' : 'none'),
+            display: (isLoading || isAuthLoading ? 'block' : 'none'),
           }}
         >
           <LinearProgress 

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useLayoutEffect } from 'react';
+import { createContext, useState, useContext, useLayoutEffect, useEffect } from 'react';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, User, deleteUser, browserLocalPersistence, browserSessionPersistence, setPersistence, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { firebaseAuth, firebaseDB } from '../index'
 import { useNavigate } from 'react-router-dom';
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: {
     const [ scheduleId, setScheduleId ] = useState<string | null>(null);
     const [ email, setEmail ] = useState("");
 
-    const { isLoading, setIsLoading } = useRootContext();
+    const { isAuthLoading, setIsAuthLoading } = useRootContext();
     const { setColorMode } = useRootContext();
     const { 
       appointData, setAppointData,
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: {
         return;
       }
       
-      setIsLoading(true);
+      setIsAuthLoading(true);
       await createUserWithEmailAndPassword(firebaseAuth, email, password)
         .then(async (result) => {
           try {
@@ -102,14 +102,14 @@ export function AuthProvider({ children }: {
           } catch (e) {
             alert("ユーザー情報をデータベースに書き込む際にエラーが起きました。");
             console.log(e);
+            setIsAuthLoading(false);
           }
         })
         .catch((e) => {
           alert("ユーザー追加時にエラーが起きました。");
           console.log(e);
+          setIsAuthLoading(false);
         });
-
-      setIsLoading(false);
     };
 
     const login = async (email: string, password: string, remember: boolean) => {
@@ -118,7 +118,7 @@ export function AuthProvider({ children }: {
         return;
       }
 
-      setIsLoading(true);
+      setIsAuthLoading(true);
       let however;
       if (remember) {
         however = browserLocalPersistence;
@@ -132,22 +132,20 @@ export function AuthProvider({ children }: {
           })
           .catch(() => {
             alert("エラーが起きました。");
+            setIsAuthLoading(false);
           });
         });
-        
-      setIsLoading(false);
     };
 
     const logout = async () => {
-      setIsLoading(true);
+      setIsAuthLoading(true);
       await signOut(firebaseAuth);
       initDatas();
       navigate("/login", { replace: true });
-      setIsLoading(false);
     }
 
     const deleteAccount = async () => {
-      setIsLoading(true);
+      setIsAuthLoading(true);
       const user = firebaseAuth.currentUser;
       if (user && scheduleId) {
         try {
@@ -167,16 +165,17 @@ export function AuthProvider({ children }: {
         } catch(e) {
           alert("削除出来ませんでした。");
           console.log(e);
+          setIsAuthLoading(false);
         }
       } else {
         alert("削除できませんでした。");
+        setIsAuthLoading(false);
       }
-      setIsLoading(false);
     }
 
     const googleProvider = new GoogleAuthProvider();
     const googleSignin = async (remember: boolean) => {
-      setIsLoading(true);
+      setIsAuthLoading(true);
       let however;
       if (remember) {
         however = browserLocalPersistence;
@@ -232,20 +231,21 @@ export function AuthProvider({ children }: {
           } catch (e) {
             alert("ユーザー情報をデータベースに書き込む際にエラーが起きました。");
             console.log(e);
+            setIsAuthLoading(false);
           }
         }).catch((error) => {
           alert('googleでサインアップできませんでした。');
           console.log(error);
+          setIsAuthLoading(false);
         });
       });
       
-      setIsLoading(false);
     }
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       onAuthStateChanged(firebaseAuth, async (user) => {
 
-        setIsLoading(true);
+        setIsAuthLoading(true);
         if (user) {
           const userDocRef = doc(firebaseDB, "users", user.uid);
           await getDoc(userDocRef)
@@ -275,7 +275,7 @@ export function AuthProvider({ children }: {
             }
           });
         }
-        setIsLoading(false);
+        setIsAuthLoading(false);
       });
     }, []);
     
@@ -292,7 +292,11 @@ export function AuthProvider({ children }: {
           deleteAccount,
         }}
       >
-        { children }
+        { isAuthLoading ? (
+          <></>
+        ) : (
+          children
+        )}
       </AuthContext.Provider>
     );
 }
