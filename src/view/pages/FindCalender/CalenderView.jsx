@@ -3,7 +3,6 @@ import { AllDayPanel, Appointments, AppointmentTooltip, DateNavigator, DayView, 
 import { Paper } from "@mui/material";
 
 const CalenderView = (props) => {
-
   return (
     <Paper>
       <Scheduler

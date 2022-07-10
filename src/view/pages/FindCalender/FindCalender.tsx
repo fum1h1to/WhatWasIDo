@@ -1,9 +1,9 @@
-import { Box, Button, Checkbox, Color, Divider, FormControlLabel, FormGroup, Grid, IconButton, InputBase, Paper, Typography } from "@mui/material";
+import { Box, Checkbox, Color, Divider, FormControlLabel, FormGroup, Grid, IconButton, InputBase, Paper, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import CalenderView from './CalenderView';
-import { memo, useState } from "react";
-import { AppointmentModel, Resource, ResourceInstance } from "@devexpress/dx-react-scheduler";
+import { memo, useEffect, useState } from "react";
+import { AppointmentModel, Resource } from "@devexpress/dx-react-scheduler";
 import { red, pink, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange, deepOrange } from "@mui/material/colors";
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 
@@ -51,13 +51,6 @@ const FindCalender = memo(() => {
     }
     
     await getOtherUserAppointData(result.scheduleId).then((appointData) => {
-
-      setDispUserAppointData([...dispUserAppointData].concat(appointData));
-
-      let reso = Object.create(resources);
-      reso[0].instances = [...reso[0].instances, { id: email, text: email, color: colorTypes[nowColorType + 1]}];
-      setResources(reso);
-
       setNowUsers([...nowUsers, email]);
       setUserDatas([...userDatas, {email: email, color: colorTypes[nowColorType + 1], appointData: appointData, disp: true}]);
       setNowColorType((nowColorType + 1) % colorTypes.length);
@@ -68,7 +61,25 @@ const FindCalender = memo(() => {
     });
   }
 
-  
+  const checkBoxHandleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    let ud = Object.create(userDatas);
+    ud[index].disp = event.target.checked;
+    setUserDatas(ud);
+  }
+
+  useEffect(() => {
+    let dispUserDatas: AppointmentModel[] = [];
+    let reso = Object.create(resources);
+    reso[0].instances = [];
+    userDatas.map((item) => {
+      if (item.disp && item.appointData) {
+        dispUserDatas = dispUserDatas.concat(item.appointData);
+        reso[0].instances = [...reso[0].instances, { id: item.email, text: item.email, color: item.color}];
+      }
+    });
+    setDispUserAppointData(dispUserDatas);
+    setResources(reso);
+  }, [userDatas]);
 
   return (
     <>
@@ -100,15 +111,21 @@ const FindCalender = memo(() => {
             <Typography variant="subtitle1" sx={{p: 2}}>ユーザー</Typography>
             <Divider />
             <FormGroup sx={{p: 2}}>
-              {userDatas.map((item) => {
+              {userDatas.map((item, index) => {
                 return (
                   <FormControlLabel 
-                    control={<Checkbox defaultChecked sx={{
-                      color: item.color[800],
-                      '&.Mui-checked': {
-                        color: item.color[600],
-                      },
-                    }} />} 
+                    control={
+                      <Checkbox 
+                        defaultChecked 
+                        sx={{
+                          color: item.color[800],
+                          '&.Mui-checked': {
+                            color: item.color[600],
+                          },
+                        }}
+                        onChange={(e) => checkBoxHandleChange(index, e)}
+                      />
+                    } 
                     label={item.email} 
                   />
                 );
