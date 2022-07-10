@@ -14,16 +14,13 @@ type UserDatas = {
   disp: boolean;
 }
 
-const colorTypes = 	[red, pink, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange, deepOrange]
+const colorTypes = 	[red, pink, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange, deepOrange];
 
 const FindCalender = memo(() => {
   const { email } = useAuthContext()
   const { appointData, searchUser, getOtherUserAppointData } = useDBContext();
 
   const [ nowColorType, setNowColorType ] = useState(0);
-  const updateNowColorType = () => {
-    setNowColorType((nowColorType + 1) % colorTypes.length);
-  };
 
   const [ dispUserAppointData, setDispUserAppointData ] = useState<AppointmentModel[]>((appointData ? appointData : []));
   const [ userDatas, setUserDatas ] = useState<UserDatas[]>((
@@ -52,7 +49,7 @@ const FindCalender = memo(() => {
     
     await getOtherUserAppointData(result.scheduleId).then((appointData) => {
       setNowUsers([...nowUsers, email]);
-      setUserDatas([...userDatas, {email: email, color: colorTypes[nowColorType + 1], appointData: appointData, disp: true}]);
+      setUserDatas([...userDatas, {email: email, color: colorTypes[(nowColorType + 1) % colorTypes.length], appointData: appointData, disp: true}]);
       setNowColorType((nowColorType + 1) % colorTypes.length);
       alert('ユーザーのデータを追加しました。');
     }).catch((error) => {
