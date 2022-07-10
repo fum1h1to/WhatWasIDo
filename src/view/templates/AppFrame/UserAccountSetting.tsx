@@ -85,7 +85,10 @@ const UserAccountSetting = memo((props: {
         <Typography variant="subtitle1" gutterBottom component="div">
           データの共有
         </Typography>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Typography variant="caption" gutterBottom>
+          「する」に変更すると、他のユーザーがあなたのメールアドレスからあなたを検索でき、あなたのデータを参照することができるようになります。
+        </Typography>
+        <Stack direction="row" spacing={1} alignItems="center" sx={{mt: 2}}>
           <Typography>しない</Typography>
           <Switch
             checked={sharing}

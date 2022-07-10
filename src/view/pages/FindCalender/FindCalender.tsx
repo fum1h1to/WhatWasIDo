@@ -1,4 +1,4 @@
-import { Box, Checkbox, Color, Divider, FormControlLabel, FormGroup, Grid, IconButton, InputBase, Paper, Typography } from "@mui/material";
+import { AppBar, Box, Checkbox, Color, Divider, FormControlLabel, FormGroup, Grid, IconButton, InputBase, Paper, Typography } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import CalenderView from './CalenderView';
@@ -102,33 +102,42 @@ const FindCalender = memo(() => {
           />
         </Grid>
         <Grid item xs={3}>
-          <Box sx={{
-            borderRadius: 1,boxShadow: 1, bgcolor: 'background.paper'
-          }}>
-            <Typography variant="subtitle1" sx={{p: 2}}>ユーザー</Typography>
-            <Divider />
-            <FormGroup sx={{p: 2}}>
-              {userDatas.map((item, index) => {
-                return (
-                  <FormControlLabel 
-                    control={
-                      <Checkbox 
-                        defaultChecked 
-                        sx={{
-                          color: item.color[800],
-                          '&.Mui-checked': {
-                            color: item.color[600],
-                          },
-                        }}
-                        onChange={(e) => checkBoxHandleChange(index, e)}
-                      />
-                    } 
-                    label={item.email} 
-                  />
-                );
-              })}
-            </FormGroup>
-          </Box>
+          <AppBar
+            position="sticky"
+            sx={{
+              borderRadius: 1,
+              boxShadow: 1,
+              bgcolor: 'background.paper',
+              color: 'text.primary',
+              top: 80
+            }}
+          >
+            <Box>
+              <Typography variant="subtitle1" sx={{p: 2}}>ユーザー</Typography>
+              <Divider />
+              <FormGroup sx={{p: 2}}>
+                {userDatas.map((item, index) => {
+                  return (
+                    <FormControlLabel 
+                      control={
+                        <Checkbox 
+                          defaultChecked 
+                          sx={{
+                            color: item.color[800],
+                            '&.Mui-checked': {
+                              color: item.color[600],
+                            },
+                          }}
+                          onChange={(e) => checkBoxHandleChange(index, e)}
+                        />
+                      } 
+                      label={item.email} 
+                    />
+                  );
+                })}
+              </FormGroup>
+            </Box>
+          </AppBar>
         </Grid>
       </Grid>
     </>
