@@ -109,13 +109,22 @@ export function DBProvider({ children }: {
 
       setIsLoading(true);
       const otherUserDocRef = doc(firebaseDB, 'schedules', otherScheduleId);
-      const otherUserDocSnap = await getDoc(otherUserDocRef);
+      
+      let returnData: AppointmentModel[] = [];
+      await getDoc(otherUserDocRef)
+      .then((otherUserDocSnap) => {
+        if (!otherUserDocSnap.exists()) {
+          setIsLoading(false);
+          throw 'データがありませんでした。';
+        }
+        returnData = otherUserDocSnap.data().appointData;
+      }).catch((error) => {
+        setIsLoading(false);
+        throw error;
+      });
       setIsLoading(false);
-      if (!otherUserDocSnap.exists()) {
-        throw 'DBでエラーが起こりました。';
-      }
 
-      return otherUserDocSnap.data().appointData;
+      return returnData;
     }
 
     /**

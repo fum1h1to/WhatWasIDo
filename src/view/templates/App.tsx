@@ -95,8 +95,6 @@ declare module '@mui/material/LinearProgress' {
  * @returns 
  */
 const App = () => {
-  console.debug("App Rendering");
-
   // ブラウザ、OSのthemeを取得。
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 

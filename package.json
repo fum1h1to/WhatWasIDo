@@ -1,7 +1,7 @@
 {
   "name": "220603_what-was-i-do",
   "version": "0.1.0",
-  "homepage": "./",
+  "homepage": "/",
   "private": true,
   "dependencies": {
     "@devexpress/dx-react-core": "^3.0.3",
