@@ -11,16 +11,24 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { Link } from "react-router-dom";
 import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
-import {  Divider } from '@mui/material';
+import { Divider } from '@mui/material';
 import GoogleButton from 'react-google-button';
 import { useRootContext } from '../../templates/App';
 
+/**
+ * ログインページの本体（右側のやつ）
+ */
 const LogInCont = React.memo(() => {
-  const { login, googleSignin } = useAuthContext();
   const { colorMode } = useRootContext();
+  const { login, googleSignin } = useAuthContext();
 
+  /**
+   * Loginボタンが押されたら行う処理。
+   * @param event 
+   */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email"));
     const password = String(data.get("password"));
@@ -28,6 +36,9 @@ const LogInCont = React.memo(() => {
     await login(email, password, remember);
   };
 
+  /**
+   * googleでのログインが押されたら行う処理。
+   */
   const googleLoginHandleClick = async () => {
     await googleSignin(true);
   }

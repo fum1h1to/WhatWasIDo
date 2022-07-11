@@ -2,6 +2,15 @@ import { ViewState } from "@devexpress/dx-react-scheduler";
 import { AllDayPanel, Appointments, AppointmentTooltip, DateNavigator, DayView, MonthView, Resources, Scheduler, TodayButton, Toolbar, ViewSwitcher, WeekView } from "@devexpress/dx-react-scheduler-material-ui";
 import { Paper } from "@mui/material";
 
+/**
+ * スケジュールデータを表示する
+ * props
+ * - appointData: 表示したいユーザーのスケジュールデータ
+ * - resources: ユーザーのスケジュールデータをどうグループ分けするか
+ * 
+ * @param {*} props 
+ * @returns 
+ */
 const CalenderView = (props) => {
   return (
     <Paper>

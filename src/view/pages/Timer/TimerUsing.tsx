@@ -2,31 +2,30 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } 
 import { memo, useEffect, useState } from "react";
 import { useTimer } from "use-timer";
 import { zeroPadding } from "../../../utils";
-
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 
+/**
+ * Timer本体
+ * props
+ * - initialTime: 何秒からカウントするか。
+ * - onEnd: 一連の処理が終わった後に実行するコールバック関数。
+ */
 const TimerUsing = memo((props: {
   initialTime: number,
-  timerOrStop: "Timer" | "Stopwatch",
   onEnd: () => void,
 }) => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
-  const [ startTime, setStartTime ] = useState<Date>(new Date());
-  const [ endTime, setEndTime ] = useState<Date | null>(null);
-  const [ title, setTitle] = useState("無題");
-  const [ memo, setMemo ] = useState("");
-
   const {
     time, start, pause, reset, status, advanceTime
   } = useTimer({
     autostart: true,
-    initialTime: props.timerOrStop === "Timer" ? props.initialTime : 0,
+    initialTime: props.initialTime,
     interval: 1000,
-    endTime: props.timerOrStop === "Timer" ? 0 : null,
-    timerType: props.timerOrStop === "Timer" ? 'DECREMENTAL' : "INCREMENTAL",
+    endTime: 0,
+    timerType: 'DECREMENTAL',
     onTimeOver: () => {
       setEndTime(new Date());
       alert("終了しました。");
@@ -34,16 +33,39 @@ const TimerUsing = memo((props: {
     },
   });
 
-  const [second, setSecound] = useState(0)
-  const [minute, setMinute] = useState(0)
-  const [hour, setHour] = useState(0)
+  // スタートした時間
+  const [ startTime, setStartTime ] = useState<Date>(new Date());
 
+  // 終了した時間
+  const [ endTime, setEndTime ] = useState<Date | null>(null);
+
+  // スケジュールのタイトル
+  const [ title, setTitle] = useState("無題");
+
+  // スケジュールのメモ
+  const [ memo, setMemo ] = useState("");
+
+  // 秒数
+  const [ second, setSecound ] = useState(0);
+
+  // 分数
+  const [ minute, setMinute ] = useState(0);
+
+  // 時間
+  const [ hour, setHour ] = useState(0);
+
+  /**
+   * timeが更新されたら、表示する時間を更新
+   */
   useEffect(() => {
     setSecound(time % 60);
     setMinute((time / 60 | 0) % 60);
     setHour(time / 3600 | 0);
   }, [time]);
 
+  /**
+   * タイマーを止めるときに、本当に止めてよいかチェックする。
+   */
   const [openCheckDialog, setOpenCheckDialog] = useState(false);
   const checkDialogHandleOpen = () => {
     setOpenCheckDialog(true);
@@ -61,6 +83,9 @@ const TimerUsing = memo((props: {
     dataInputDialogHandleOpen();
   }
 
+  /**
+   * スケジュールのタイトルとメモを入力させ、firestoreに今回の記録を反映。
+   */
   const [openDataInputDialog, setOpenDataInputDialog] = useState(false);
   const dataInputDialogHandleOpen = () => {
     setOpenDataInputDialog(true);
@@ -84,6 +109,9 @@ const TimerUsing = memo((props: {
     props.onEnd();
   }
 
+  /**
+   * タイマーをスタート
+   */
   const stopTimer = () => {
     checkDialogHandleOpen();
   }

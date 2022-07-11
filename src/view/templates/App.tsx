@@ -15,35 +15,10 @@ import { Layout } from './Layout';
 import { Box, LinearProgress, useMediaQuery } from '@mui/material';
 import { blue } from '@mui/material/colors';
 
-type RootContextType = {
-  colorMode: "light" | "dark";
-  setColorMode: (mode: "light" | "dark") => void;
-  isLoading: boolean;
-  setIsLoading: (loading: boolean) => void;
-  isAuthLoading: boolean;
-  setIsAuthLoading: (loading: boolean) => void;
-}
-
-const RootContext = createContext<RootContextType>({} as RootContextType);
-
-export function useRootContext() { 
-  return useContext(RootContext);
-}
-
-declare module '@mui/material/styles' {
-  interface Palette {
-    progress: Palette['primary'];
-  }
-  interface PaletteOptions {
-    progress: PaletteOptions['primary'];
-  }
-}
-declare module '@mui/material/LinearProgress' {
-  interface LinearProgressPropsColorOverrides {
-    progress: true;
-  }
-}
-
+/**
+ * react routerによるルーティング
+ * - ページのルーティングを提供
+ */
 const AppRouter = memo(() => {
   return (
     <BrowserRouter basename="/">
@@ -77,12 +52,63 @@ const AppRouter = memo(() => {
   );
 });
 
-export default function App() {
+/**
+ * RootContextのタイプとそれを子コンポーネントで使えるようにするための処理
+ */
+ type RootContextType = {
+  colorMode: "light" | "dark";
+  setColorMode: (mode: "light" | "dark") => void;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
+  isAuthLoading: boolean;
+  setIsAuthLoading: (loading: boolean) => void;
+}
+
+const RootContext = createContext<RootContextType>({} as RootContextType);
+
+export function useRootContext() { 
+  return useContext(RootContext);
+}
+
+/**
+ * 新しいカラーを追加するために必要なもの
+ */
+declare module '@mui/material/styles' {
+  interface Palette {
+    progress: Palette['primary'];
+  }
+  interface PaletteOptions {
+    progress: PaletteOptions['primary'];
+  }
+}
+declare module '@mui/material/LinearProgress' {
+  interface LinearProgressPropsColorOverrides {
+    progress: true;
+  }
+}
+
+/**
+ * rootコンポーネント
+ * - themeの提供
+ * - loading処理の提供
+ * 
+ * @returns 
+ */
+const App = () => {
+  console.debug("App Rendering");
+
+  // ブラウザ、OSのthemeを取得。
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-  const [colorMode, setColorMode] = useState<"light" | "dark">(prefersDarkMode ? "dark" : "light");
+
+  // このサイトのカラーモード
+  const [ colorMode, setColorMode ] = useState<"light" | "dark">(prefersDarkMode ? "dark" : "light");
+
+  // ローディング中かどうか（ページ真っ白にしない）
   const [ isLoading, setIsLoading ] = useState(false);
+  // ローティング中かどうか（ページが真っ白になる）
   const [ isAuthLoading, setIsAuthLoading ] = useState(true);
 
+  // Themeの初期化
   const mdTheme = createTheme({
     palette: {
       mode: colorMode,
@@ -92,8 +118,12 @@ export default function App() {
     }
   });
 
+  // isLoadingとisAuthLoadingの状態を出力
   useEffect(() => {
-    console.log(isAuthLoading);
+    console.debug("isLoading: \u001b[36m" + isLoading);
+  }, [isLoading]);
+  useEffect(() => {
+    console.debug("isAuthLoading: \u001b[36m" + isAuthLoading);
   }, [isAuthLoading]);
 
   return (
@@ -130,3 +160,5 @@ export default function App() {
     </RootContext.Provider>
   );
 }
+
+export default App;

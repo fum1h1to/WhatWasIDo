@@ -21,6 +21,9 @@ import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import style from './style.module.scss';
 import { memo } from 'react';
 
+/**
+ * スケジュールの設定を開くときのスタイル
+ */
 const FormOverlay = memo(({ visible, children, onHide }) => {
   return (
     <Modal 
@@ -36,10 +39,18 @@ const FormOverlay = memo(({ visible, children, onHide }) => {
   );
 });
 
+/**
+ * Dashboardページ
+ * ユーザーのスケジュールデータを表示する
+ */
 const DashBoard = memo(() => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
   
+  /**
+   * 更新内容をfirestoreに反映する。
+   * @param {*} param0 
+   */
   const commitChanges = async ({ added, changed, deleted }) => {
     let data = Object.create(appointData);
     if (added) {

@@ -15,11 +15,24 @@ const modalStyle = {
   p: 4,
 };
 
+/**
+ * タイマーの時間設定
+ */
 const TimerCont = memo(() => {
-  const [second, setSecound] = useState(0);
-  const [minute, setMinute] = useState(3);
-  const [hour, setHour] = useState(0);
+  // 秒数
+  const [ second, setSecound ] = useState(0);
 
+  // 分数
+  const [ minute, setMinute ] = useState(3);
+
+  // 時間
+  const [ hour, setHour ] = useState(0);
+
+  /**
+   * 秒数が規定値を超えていないかチェック
+   * @param event 
+   * @returns 
+   */
   const checkSecond = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const check = Number(event.target.value);
     if (check < 0) {
@@ -33,6 +46,11 @@ const TimerCont = memo(() => {
     setSecound(Math.floor(check));
   }
 
+  /**
+   * 分数が規定値を超えていないかチェック
+   * @param event 
+   * @returns 
+   */
   const checkMinute = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const check = Number(event.target.value);
     if (check < 0) {
@@ -46,6 +64,11 @@ const TimerCont = memo(() => {
     setMinute(Math.floor(check));
   }
 
+  /**
+   * 時間が規定値を超えていないかチェック
+   * @param event 
+   * @returns 
+   */
   const checkHour = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const check = Number(event.target.value);
     if (check < 0) {
@@ -59,6 +82,9 @@ const TimerCont = memo(() => {
     setHour(Math.floor(check));
   }
 
+  /**
+   * TImer本体のモーダルの開き閉じ
+   */
   const [openTimerModal, setOpenTimerModal] = useState(false);
   const timerModalHandleClose = () => {
     setOpenTimerModal(false);
@@ -67,6 +93,9 @@ const TimerCont = memo(() => {
     setOpenTimerModal(true);
   }
 
+  /**
+   * Timerを止めてよいかを確認するダイアログ
+   */
   const [openCheckDialog, setOpenCheckDialog] = useState(false);
   const checkDialogHandleOpen = () => {
     setOpenCheckDialog(true);
@@ -82,6 +111,9 @@ const TimerCont = memo(() => {
     timerModalHandleClose();
   }
 
+  /**
+   * timerのスタート
+   */
   const startTimer = () => {
     timerModalHandleOpen();
   }
@@ -179,7 +211,6 @@ const TimerCont = memo(() => {
         >
           <TimerUsing
             initialTime={ (hour * 3600) + (minute * 60) + second }
-            timerOrStop="Timer"
             onEnd={timerModalHandleClose}
           />
           <Dialog

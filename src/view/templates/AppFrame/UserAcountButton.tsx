@@ -13,11 +13,16 @@ import { useAuthContext } from '../../../functional/firebase/auth/AuthProvider';
 import { Grid } from '@mui/material';
 import { memo, MouseEvent, useState } from 'react';
 import UserAccountSetting from './UserAccountSetting';
-import { useRootContext } from '../App';
 
+/**
+ * 画面右上にあるボタンについて
+ */
 const UserAcountButton = memo(() => {
   const { logout, email } = useAuthContext(); 
 
+  /**
+   * 画面右上にあるユーザーアイコンを押した時のダイアログ表示と非表示
+   */
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => {
@@ -27,6 +32,9 @@ const UserAcountButton = memo(() => {
     setAnchorEl(null);
   };
 
+  /**
+   * アカウント設定のモーダルを開くかどうか
+   */
   const [openUserAccountSetting, setOpenUserAccountSetting] = useState(false);
   const UserAccountSettingHandleClose = () => {
     setOpenUserAccountSetting(false);
@@ -35,10 +43,12 @@ const UserAcountButton = memo(() => {
     setOpenUserAccountSetting(true);
   }
 
+  /**
+   * ユーザーをログアウトさせる。
+   */
   const logoutHandleClick = async () => {
     await logout();
   }
-
 
   return (
     <>

@@ -66,6 +66,9 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+/**
+ * アプリの枠組み
+ */
 const AppFrame = memo(({ children }: {
   children?: React.ReactNode;
 }) => {

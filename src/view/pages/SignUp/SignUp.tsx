@@ -4,6 +4,9 @@ import Grid from '@mui/material/Grid';
 import SignUpCont from './SignUpCont';
 import { memo } from 'react';
 
+/**
+ * サインアップページの枠組み
+ */
 const SignUp = memo(() => {
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>

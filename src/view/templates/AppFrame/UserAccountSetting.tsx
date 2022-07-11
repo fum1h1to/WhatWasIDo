@@ -16,14 +16,18 @@ const style = {
   p: 4,
 }
 
+/**
+ * アカウント設定モーダル
+ */
 const UserAccountSetting = memo((props: {
   open: boolean,
   onClose: () => void,
 }) => {
   const { loginUserId, deleteAccount, scheduleId } = useAuthContext();
   const { colorMode } = useRootContext();
-  const { updateIsDarkMode } = useDBContext();
+  const { sharing, updateSharing, updateIsDarkMode } = useDBContext();
 
+  // ユーザーを削除してよいかどうかを聞くダイアログの開き閉じ
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const deleteDialogHandleOpen = () => {
     setOpenDeleteDialog(true);
@@ -31,10 +35,19 @@ const UserAccountSetting = memo((props: {
   const deleteDialogHandleClose = () => {
     setOpenDeleteDialog(false);
   }
+
+  /**
+   * ユーザーアカウントの削除処理。
+   */
   const okDelete = async () => {
     await deleteAccount();
   }
 
+  /**
+   * ダークモードに変更したかどうかをfirestoreに反映させる。
+   * @param event 
+   * @param colorMode 
+   */
   const colorModehandleChange = async (
     event: MouseEvent<HTMLElement>,
     colorMode: "dark" | "light",
@@ -42,7 +55,10 @@ const UserAccountSetting = memo((props: {
     await updateIsDarkMode(loginUserId, colorMode === 'dark' ? true : false);
   }
 
-  const { sharing, updateSharing } = useDBContext();
+  /**
+   * データを共有するかしないかをfirestoreに反映させる。
+   * @param event 
+   */
   const sharinghandleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     await updateSharing(scheduleId, event.target.checked);
   }

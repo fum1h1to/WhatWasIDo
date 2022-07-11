@@ -8,6 +8,9 @@ import UserData from '../../../data/UserData';
 import ScheduleData from '../../../data/ScheduleData';
 import { useRootContext } from '../../../view/templates/App';
 
+/**
+ * AuthContextのタイプとそれを子コンポーネントで使えるようにするための処理
+ */
 type AuthContextType = {
   loginUserId: string | null;
   scheduleId: string | null;
@@ -25,23 +28,32 @@ export function useAuthContext() {
   return useContext(AuthContext);
 }
 
+/**
+ * ユーザー認証周りの機能を子コンポーネントに提供
+ * 
+ * @param children
+ * @returns 
+ */
 export function AuthProvider({ children }: {
     children?: React.ReactNode;
   }) {
-    const [ loginUserId, setLoginUserId ] = useState<string | null>(null);
-    const [ scheduleId, setScheduleId ] = useState<string | null>(null);
-    const [ email, setEmail ] = useState("");
-
     const { isAuthLoading, setIsAuthLoading } = useRootContext();
     const { setColorMode } = useRootContext();
-    const { 
-      appointData, setAppointData,
-      isDarkMode, setIsDarkMode,
-      sharing, setSharing,
-    } = useDBContext();
-
+    const { appointData, setAppointData, setIsDarkMode, setSharing } = useDBContext();
     const navigate = useNavigate();
 
+    // ログインしているユーザのID
+    const [ loginUserId, setLoginUserId ] = useState<string | null>(null);
+
+    // ログインしているユーザーのスケジュールID
+    const [ scheduleId, setScheduleId ] = useState<string | null>(null);
+
+    // ログインしているユーザーのemail
+    const [ email, setEmail ] = useState("");
+
+    /**
+     * 各stateの初期化
+     */
     const initDatas = () => {
       setScheduleId(null);
       setLoginUserId(null);
@@ -51,6 +63,13 @@ export function AuthProvider({ children }: {
       setSharing(false);
     }
 
+    /**
+     * サインアップ処理
+     * @param email 
+     * @param password 
+     * @param confirmPassword 
+     * @returns 
+     */
     const signup = async (email: string, password: string, confirmPassword: string) => {
       if (email === "" || password === "" || confirmPassword === "") {
         alert("未入力の項目があります。");
@@ -100,18 +119,25 @@ export function AuthProvider({ children }: {
 
             navigate("/app", { replace: true });
           } catch (e) {
-            alert("ユーザー情報をデータベースに書き込む際にエラーが起きました。");
-            console.log(e);
+            alert("サインアップ出来ませんでした。");
+            console.error(e);
             setIsAuthLoading(false);
           }
         })
         .catch((e) => {
-          alert("ユーザー追加時にエラーが起きました。");
-          console.log(e);
+          alert("サインアップ出来ませんでした。");
+          console.error(e);
           setIsAuthLoading(false);
         });
     };
 
+    /**
+     * ログイン処理
+     * @param email 
+     * @param password 
+     * @param remember 
+     * @returns 
+     */
     const login = async (email: string, password: string, remember: boolean) => {
       if (email === "" || password === "") {
         alert("未入力の項目があります。");
@@ -130,13 +156,17 @@ export function AuthProvider({ children }: {
           .then(() => {
             navigate("/app", { replace: true});
           })
-          .catch(() => {
-            alert("エラーが起きました。");
+          .catch((e) => {
+            alert("ログインできませんでした。");
+            console.error(e);
             setIsAuthLoading(false);
           });
         });
     };
 
+    /**
+     * ログアウト処理
+     */
     const logout = async () => {
       setIsAuthLoading(true);
       await signOut(firebaseAuth);
@@ -144,6 +174,9 @@ export function AuthProvider({ children }: {
       navigate("/login", { replace: true });
     }
 
+    /**
+     * アカウントの削除処理
+     */
     const deleteAccount = async () => {
       setIsAuthLoading(true);
       const user = firebaseAuth.currentUser;
@@ -164,7 +197,7 @@ export function AuthProvider({ children }: {
           navigate("/login", { replace: true });
         } catch(e) {
           alert("削除出来ませんでした。");
-          console.log(e);
+          console.error(e);
           setIsAuthLoading(false);
         }
       } else {
@@ -173,6 +206,9 @@ export function AuthProvider({ children }: {
       }
     }
 
+    /**
+     * googleでのサインアップ
+     */
     const googleProvider = new GoogleAuthProvider();
     const googleSignin = async (remember: boolean) => {
       setIsAuthLoading(true);
@@ -229,19 +265,23 @@ export function AuthProvider({ children }: {
   
             navigate("/app", { replace: true });
           } catch (e) {
-            alert("ユーザー情報をデータベースに書き込む際にエラーが起きました。");
-            console.log(e);
+            alert("googleでサインアップできませんでした。");
+            console.error(e);
             setIsAuthLoading(false);
           }
-        }).catch((error) => {
+        }).catch((e) => {
           alert('googleでサインアップできませんでした。');
-          console.log(error);
+          console.error(e);
           setIsAuthLoading(false);
         });
       });
       
     }
 
+    /**
+     * ユーザがログインしているかどうかチェックし、
+     * ログインしていたら、それに応じた処理をする。
+     */
     useEffect(() => {
       onAuthStateChanged(firebaseAuth, async (user) => {
 

@@ -7,32 +7,51 @@ import { AppointmentModel, Resource } from "@devexpress/dx-react-scheduler";
 import { red, pink, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange, deepOrange } from "@mui/material/colors";
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 
-type UserDatas = {
+type UserData = {
   email: string;
   color: Color;
   appointData: AppointmentModel[] | undefined;
   disp: boolean;
 }
 
+// ユーザーの色を定義
 const colorTypes = 	[red, pink, purple, deepPurple, indigo, blue, lightBlue, cyan, teal, green, lightGreen, lime, yellow, amber, orange, deepOrange];
 
+/**
+ * FindCalenderページ
+ * 検索したユーザーのスケジュールを表示する。
+ */
 const FindCalender = memo(() => {
   const { email } = useAuthContext()
   const { appointData, searchUser, getOtherUserAppointData } = useDBContext();
 
+  // 次に指定するユーザーのカラータイプ
   const [ nowColorType, setNowColorType ] = useState(0);
 
+  // 表示したいユーザーのスケジュールを保持
   const [ dispUserAppointData, setDispUserAppointData ] = useState<AppointmentModel[]>((appointData ? appointData : []));
-  const [ userDatas, setUserDatas ] = useState<UserDatas[]>((
-  appointData ? [{email: email, color: colorTypes[nowColorType], appointData: appointData, disp: true}] : [] 
+
+  // 追加したユーザーのデータを保持
+  const [ userDatas, setUserDatas ] = useState<UserData[]>((
+    appointData ? [{email: email, color: colorTypes[nowColorType], appointData: appointData, disp: true}] : [] 
   ));
+
+  // 追加したユーザーのメールアドレスを保持
   const [ nowUsers, setNowUsers ] = useState<String[]>((appointData ? [email] : []));
+
+  // 表示したいスケジュールの振り分け方を保持
   const [ resources, setResources ] = useState<Resource[]>([{ 
     fieldName: 'userName', 
     title: 'User Name', 
-    instances: (appointData ? [{ id: email, text: email, color: colorTypes[nowColorType]}] : []) 
+    instances: (appointData ? [{ id: email, text: email, color: colorTypes[nowColorType]}] : []),
   }]);
 
+  /**
+   * メールアドレスからユーザーを見つけ、
+   * そのユーザーのデータを必要な変数に追加。
+   * @param event 
+   * @returns 
+   */
   const userSearchHandleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -54,16 +73,26 @@ const FindCalender = memo(() => {
       alert('ユーザーのデータを追加しました。');
     }).catch((error) => {
       alert('ユーザーが見つかりませんでした。');
-      console.log(error);
+      console.error(error);
     });
   }
 
+  /**
+   * checkboxに変更があったときに、そのユーザーを表示するかどうかという変数を変更
+   * 具体的には、userDataのdispをindexに応じて変更。
+   * @param index 
+   * @param event 
+   */
   const checkBoxHandleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     let ud = Object.create(userDatas);
     ud[index].disp = event.target.checked;
     setUserDatas(ud);
   }
 
+  /**
+   * userDatasが変更されたら、
+   * 実際に表示のために必要なdispUserAppointDataとresources変数を変更。
+   */
   useEffect(() => {
     let dispUserDatas: AppointmentModel[] = [];
     let reso = Object.create(resources);

@@ -9,6 +9,9 @@ import AvTimerIcon from '@mui/icons-material/AvTimer';
 import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
 import { Link } from "react-router-dom";
 
+/**
+ * どこに遷移させるか
+ */
 export const mainListItems = (
   <React.Fragment>
     <ListItemButton 

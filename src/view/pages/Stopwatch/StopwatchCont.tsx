@@ -2,20 +2,17 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider
 import { memo, useEffect, useState } from "react";
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import { zeroPadding } from "../../../utils";
-
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
 import { useAuthContext } from "../../../functional/firebase/auth/AuthProvider";
 import { useDBContext } from "../../../functional/firebase/db/DBProvider";
 import { useTimer } from "use-timer";
 
+/**
+ * ストップウォッチ本体
+ */
 const StopwatchCont = memo(() => {
   const { email, scheduleId } = useAuthContext()
   const { appointData, updateAppointData } = useDBContext();
-  const [ startTime, setStartTime ] = useState<Date>(new Date());
-  const [ endTime, setEndTime ] = useState<Date | null>(null);
-  const [ title, setTitle] = useState("無題");
-  const [ memo, setMemo ] = useState("");
-
   const {
     time, start, pause, reset, status
   } = useTimer({
@@ -30,16 +27,39 @@ const StopwatchCont = memo(() => {
     },
   });
 
-  const [second, setSecound] = useState(0)
-  const [minute, setMinute] = useState(0)
-  const [hour, setHour] = useState(0)
+  // スタートした時間
+  const [ startTime, setStartTime ] = useState<Date>(new Date());
 
+  // 終了した時間
+  const [ endTime, setEndTime ] = useState<Date | null>(null);
+
+  // スケジュールのタイトル
+  const [ title, setTitle] = useState("無題");
+
+  // スケジュールのメモ
+  const [ memo, setMemo ] = useState("");
+
+  // 秒数
+  const [ second, setSecound ] = useState(0);
+
+  // 分数
+  const [ minute, setMinute ] = useState(0);
+
+  // 時間
+  const [ hour, setHour ] = useState(0);
+
+  /**
+   * timeが更新されたら、表示する時間を更新
+   */
   useEffect(() => {
     setSecound(time % 60);
     setMinute((time / 60 | 0) % 60);
     setHour(time / 3600 | 0);
   }, [time]);
 
+  /**
+   * ストップウォッチを止めるときに、本当に止めてよいかチェックする。
+   */
   const [openCheckDialog, setOpenCheckDialog] = useState(false);
   const checkDialogHandleOpen = () => {
     setOpenCheckDialog(true);
@@ -57,6 +77,9 @@ const StopwatchCont = memo(() => {
     dataInputDialogHandleOpen();
   }
 
+  /**
+   * スケジュールのタイトルとメモを入力させ、firestoreに今回の記録を反映。
+   */
   const [openDataInputDialog, setOpenDataInputDialog] = useState(false);
   const dataInputDialogHandleOpen = () => {
     setOpenDataInputDialog(true);
@@ -80,11 +103,17 @@ const StopwatchCont = memo(() => {
     reset()
   }
 
+  /**
+   * ストップウォッチをスタート
+   */
   const startStopwatch = () => {
     setStartTime(new Date())
     start();
   }
 
+  /**
+   * ストップウォッチを止める
+   */
   const stopStopwatch = () => {
     checkDialogHandleOpen();
   }
