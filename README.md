@@ -8,7 +8,9 @@
 自分のログを保存するようなものである。
 
 # Demo
-[実際のページ](https://whatwasido.firebaseapp.com/)
+[実際のページ](https://whatwasido.firebaseapp.com/)<br>
+↑　2023/02/26に停止
+
 ### サインアップ
 ![picture1](md_imgs/img-01.jpg)
 ### Dashboardページ
@@ -55,7 +57,7 @@
 
 ※FirebaseのAPI Keyはアップしてないので、基本的にローカルでは動かせない。
 
-実際に動かしたい場合は[こちら](https://whatwasido.firebaseapp.com/)からお願いします。
+実際に動かしたい場合は[こちら](https://whatwasido.firebaseapp.com/)(2023/02/26に停止)からお願いします。
 
 1. `yarn install`
 2. `yarn start`でローカルサーバーの起動

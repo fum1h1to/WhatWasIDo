@@ -39,10 +39,10 @@ const AppRouter = memo(() => {
                 </AppFrame>
               </PrivateRoute>
             } >
-              <Route path="" element={ <Dashboard /> } />
-              <Route path="timer" element={ <Timer /> } />
-              <Route path="stopwatch" element={ <Stopwatch /> } />
-              <Route path="findCalender" element={ <FindCalender /> } />
+              <Route path="" element={<Dashboard />} />
+              <Route path="timer" element={<Timer />} />
+              <Route path="stopwatch" element={<Stopwatch />} />
+              <Route path="findCalender" element={<FindCalender />} />
             </Route>
             <Route path="*" element={<h1>404</h1>} />
           </Routes>
@@ -55,7 +55,7 @@ const AppRouter = memo(() => {
 /**
  * RootContextのタイプとそれを子コンポーネントで使えるようにするための処理
  */
- type RootContextType = {
+type RootContextType = {
   colorMode: "light" | "dark";
   setColorMode: (mode: "light" | "dark") => void;
   isLoading: boolean;
@@ -66,7 +66,7 @@ const AppRouter = memo(() => {
 
 const RootContext = createContext<RootContextType>({} as RootContextType);
 
-export function useRootContext() { 
+export function useRootContext() {
   return useContext(RootContext);
 }
 
@@ -99,12 +99,12 @@ const App = () => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
   // このサイトのカラーモード
-  const [ colorMode, setColorMode ] = useState<"light" | "dark">(prefersDarkMode ? "dark" : "light");
+  const [colorMode, setColorMode] = useState<"light" | "dark">(prefersDarkMode ? "dark" : "light");
 
   // ローディング中かどうか（ページ真っ白にしない）
-  const [ isLoading, setIsLoading ] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   // ローティング中かどうか（ページが真っ白になる）
-  const [ isAuthLoading, setIsAuthLoading ] = useState(true);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   // Themeの初期化
   const mdTheme = createTheme({
@@ -136,7 +136,7 @@ const App = () => {
       }}
     >
       <ThemeProvider theme={mdTheme}>
-        <Box 
+        <Box
           sx={{
             width: '100%',
             position: 'absolute',
@@ -146,7 +146,7 @@ const App = () => {
             display: (isLoading || isAuthLoading ? 'block' : 'none'),
           }}
         >
-          <LinearProgress 
+          <LinearProgress
             color='progress'
             sx={{
               bgcolor: 'transparent'
